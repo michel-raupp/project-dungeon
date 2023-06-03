@@ -85,7 +85,7 @@ const Game = () => {
       health: 60,
       maxMana: 30,
       mana: 30,
-      attack: 5,
+      attack: 50,
       xp: 0,
       level: 1,
       xpToLevelUp: 20,
@@ -100,50 +100,59 @@ const Game = () => {
   const [message, setMessage] = useState("");
   const [gameOver, setGameOver] = useState(false);
   const [isMagicAttack, setIsMagicAttack] = useState(false);
-  const randomNumber = Math.floor(Math.random() * 5) + 1;
+  const randomNumber = Math.floor(Math.random() * 2) + 1;
   const [enemies, setEnemies] = useState([getRandomEnemy()]);
 
   const playerAttack = useCallback(() => {
     if (!isPlayerTurn || gameOver) {
       return; // Prevent attack if it's not the player's turn or the game is over
     }
-  
+
     const updatedEnemies = [...enemies];
     const currentEnemy = updatedEnemies[currentEnemyIndex];
-  
-    const playerDamage = isMagicAttack
-      ? Math.floor(currentEnemy.maxHealth * 0.3)
-      : player.attack;
+
+    let playerDamage;
+    let updatedPlayer = { ...player };
+
+    if (isMagicAttack && player.mana >= 20) {
+      playerDamage = Math.floor(player.attack * 3);
+      updatedPlayer.mana -= 20;
+      console.log("Magic Attack");
+      console.log("Player Mana:", updatedPlayer.mana);
+    } else {
+      playerDamage = player.attack;
+      console.log("Normal Attack");
+      updatedPlayer.mana += 3; // Add 3 mana for normal attack
+      if (updatedPlayer.mana > updatedPlayer.maxMana) {
+        updatedPlayer.mana = updatedPlayer.maxMana;
+      }
+    }
+
     currentEnemy.health -= playerDamage;
-  
-    // Update mana consumption
-    const manaCost = isMagicAttack ? 20 : 0;
-    const updatedPlayer = JSON.parse(JSON.stringify(player));
-    updatedPlayer.mana -= manaCost;
-  
+
     // Attack animation
     const playerImageElement = document.querySelector(".player-img");
     const enemyImageElement = document.querySelector(".enemy-img");
     playerImageElement.classList.add("player-attack-animation");
     enemyImageElement.classList.add("enemy-damage-animation");
-  
+
     setTimeout(() => {
       playerImageElement.classList.remove("player-attack-animation");
       enemyImageElement.classList.remove("enemy-damage-animation");
     }, 500);
-  
+
     if (currentEnemy.health <= 0) {
       // Enemy defeated
       currentEnemy.health = 0; // Ensure health doesn't go below 0
-  
+
       // Increase player XP
       const xpGained = currentEnemy.xp;
       updatedPlayer.xp += xpGained;
-  
+
       // Check if player levels up
-      if (updatedPlayer.xp >= updatedPlayer.xpToLevelUp) {
-        const xpOverflow = updatedPlayer.xp - updatedPlayer.xpToLevelUp;
-        updatedPlayer.xp = xpOverflow;
+      while (updatedPlayer.xp >= updatedPlayer.xpToLevelUp) {
+        // Deduct XP and level up multiple times if necessary
+        updatedPlayer.xp -= updatedPlayer.xpToLevelUp;
         updatedPlayer.level++;
         updatedPlayer.xpToLevelUp += 20;
         updatedPlayer.maxHealth += 10;
@@ -154,20 +163,23 @@ const Game = () => {
         setMessage(
           `Congratulations! You leveled up to Level ${updatedPlayer.level}!`
         );
-      } else {
+      }
+      if (updatedPlayer.xp > 0) {
         setMessage(
           `You defeated the ${currentEnemy.name} and gained ${xpGained} XP.`
         );
-        setIsPlayerTurn(false);
+      } else {
+        setMessage(
+          `You defeated the ${currentEnemy.name} and leveled up to Level ${updatedPlayer.level}!`
+        );
       }
-  
+
       setPlayer(updatedPlayer);
-  
-  
+
       // Continue to the next enemy
       const nextEnemyIndex = currentEnemyIndex + 1;
       setCurrentEnemyIndex(nextEnemyIndex);
-  
+
       // Reset the health of the next enemy
       const nextEnemy = getRandomEnemy();
       updatedEnemies[nextEnemyIndex] = nextEnemy;
@@ -180,9 +192,9 @@ const Game = () => {
         `You attacked the ${currentEnemy.name} and dealt ${playerDamage} damage.`
       );
     }
-  
-    setPlayer(updatedPlayer);
+
     setEnemies(updatedEnemies);
+    setIsMagicAttack(false); // Reset the magic attack flag after the attack
   }, [
     player,
     enemies,
@@ -227,30 +239,121 @@ const Game = () => {
     }
   }, [isPlayerTurn, gameOver, player, enemies, currentEnemyIndex]);
 
+  const handleMagicAttack = useCallback(() => {
+    setIsMagicAttack(true);
+
+    setPlayer((prevPlayer) => ({
+      ...prevPlayer,
+      mana: prevPlayer.mana - 20,
+    }));
+  }, [setPlayer]);
+
+  useEffect(() => {
+    if (isMagicAttack) {
+      // Attack animation
+      const playerImageElement = document.querySelector(".player-img");
+      const enemyImageElement = document.querySelector(".enemy-img");
+      playerImageElement.classList.add("player-attack-animation");
+      enemyImageElement.classList.add("enemy-damage-animation");
+
+      setTimeout(() => {
+        playerImageElement.classList.remove("player-attack-animation");
+        enemyImageElement.classList.remove("enemy-damage-animation");
+      }, 500);
+      const updatedEnemies = [...enemies];
+      const currentEnemy = updatedEnemies[currentEnemyIndex];
+
+      const magicDamage = player.attack * 3; // Calculate the magic damage
+      currentEnemy.health -= magicDamage; // Subtract the magic damage from enemy's health
+
+      if (currentEnemy.health <= 0) {
+        // Enemy defeated
+        currentEnemy.health = 0; // Ensure health doesn't go below 0
+
+        // Increase player XP
+        const xpGained = currentEnemy.xp;
+        setPlayer((prevPlayer) => ({
+          ...prevPlayer,
+          xp: prevPlayer.xp + xpGained,
+        }));
+
+        // Check if player levels up
+        if (player.xp >= player.xpToLevelUp) {
+          setPlayer((prevPlayer) => ({
+            ...prevPlayer,
+            xp: prevPlayer.xp - prevPlayer.xpToLevelUp,
+            level: prevPlayer.level + 1,
+            xpToLevelUp: prevPlayer.xpToLevelUp + 20,
+            maxHealth: prevPlayer.maxHealth + 10,
+            health: prevPlayer.maxHealth + 10,
+            maxMana: prevPlayer.maxMana + 5,
+            mana: prevPlayer.maxMana + 5,
+            attack: prevPlayer.attack + 2,
+          }));
+          setMessage(
+            `Congratulations! You leveled up to Level ${player.level + 1}!`
+          );
+        } else {
+          setMessage(
+            `You defeated the ${currentEnemy.name} and gained ${xpGained} XP.`
+          );
+          setIsPlayerTurn(false);
+        }
+
+        setEnemies(updatedEnemies);
+
+        // Continue to the next enemy
+        const nextEnemyIndex = currentEnemyIndex + 1;
+        setCurrentEnemyIndex(nextEnemyIndex);
+
+        // Reset the health of the next enemy
+        const nextEnemy = getRandomEnemy();
+        updatedEnemies[nextEnemyIndex] = nextEnemy;
+        setTimeout(() => {
+          setMessage(`A new enemy came up! Prepare to fight!`);
+        }, 500); // Delay of 2 seconds before showing the next enemy arrival message
+      } else {
+        // Enemy still alive
+        setMessage(
+          `You used a magic attack and dealt ${magicDamage} damage to the ${currentEnemy.name}.`
+        );
+      }
+
+      setIsMagicAttack(false);
+    }
+  }, [
+    player,
+    currentEnemyIndex,
+    enemies,
+    isMagicAttack,
+    setPlayer,
+    setEnemies,
+    setCurrentEnemyIndex,
+    setIsPlayerTurn,
+    setMessage,
+  ]);
+
   const handleNextTurn = useCallback(() => {
-    if (!gameOver && isPlayerTurn && !isMagicAttack) {
-      playerAttack();
+    if (!gameOver && isPlayerTurn) {
+      const magicAttack = isMagicAttack ? playerAttack : null;
+      playerAttack(magicAttack);
       setIsPlayerTurn(false);
 
       const currentEnemy = enemies[currentEnemyIndex];
       if (currentEnemy && currentEnemy.health > 0) {
-        // Delay before enemy attack
         setTimeout(() => {
           enemyAttack();
           setIsPlayerTurn(true);
-        }, 2000); // 2 second delay
+        }, 2000);
       } else {
         const nextEnemyIndex = currentEnemyIndex + 1;
         if (nextEnemyIndex < enemies.length) {
           setCurrentEnemyIndex(nextEnemyIndex);
-          // setMessage(`A new enemy has appeared: ${enemies[nextEnemyIndex].name}`);
         }
         setIsPlayerTurn(true);
       }
-
-      setIsMagicAttack(false); // Reset magic attack flag
     } else {
-      setIsPlayerTurn(true); // Enable the button when it's the player's turn
+      setIsPlayerTurn(true);
     }
   }, [
     isPlayerTurn,
@@ -344,11 +447,8 @@ const Game = () => {
                 A
               </Button>
               <Button
-                onClick={() => {
-                  setIsMagicAttack(true);
-                  handleNextTurn();
-                }}
-                disabled={!isPlayerTurn || gameOver || player.mana < 20} // Disable magic attack button if player has insufficient mana
+                onClick={handleMagicAttack}
+                disabled={!isPlayerTurn || gameOver || player.mana < 20}
               >
                 B
               </Button>
