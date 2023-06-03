@@ -1,9 +1,68 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 
+//player attack
+const playerAttack = keyframes`
+  0% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-50px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+`;
+//player took damage
+const tookDamage = keyframes`
+  0% {
+    transform: translateX(0);
+    transform: translateY(0);
+  }
+  20% {
+    filter: brightness(200000) contrast(2000) saturate(2000000);
+    transform: translateY(5px);
+    transform: translateX(5px);
+  }
+  100% {
+
+    transform: translateX(0);
+    transform: translateY(0);
+  }
+`;
+
+//enemy attack
+const enemyAttack = keyframes`
+  0% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(50px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+`;
+//enemy took damage
+const enemyTookDamage = keyframes`
+  0% {
+    transform: translateX(0);
+    transform: translateY(0);
+  }
+  20% {
+    filter: brightness(200000) contrast(2000) saturate(2000000);
+    transform: translateY(-5px);
+    transform: translateX(-5px);
+  }
+  100% {
+
+    transform: translateX(0);
+    transform: translateY(0);
+  }
+`;
 
 export const Padrao = {
   colors: {
-    primary: "#94e344",
+    primary: "#94ff29",
     secondary: "#46878f",
     dark: "#332c50",
     black: "#211e20",
@@ -30,7 +89,40 @@ export const StyledHome = styled(ContainerDefault)`
   p {
     font-size: 12px;
   }
+
+  .sprites {
+    display: flex;
+    align-items: flex-end;
+    width: 100%;
+    justify-content: space-between;
+  }
 `;
+
+export const PlayerImage = styled.img`
+  filter: grayscale(100%) sepia(100%) hue-rotate(33deg) saturate(6);
+  width: 40px;
+  height: 40px;
+  padding-bottom: 15px;
+  &.player-attack-animation {
+    animation: ${playerAttack} 0.5s;
+  }
+  &.player-damage-animation {
+    animation: ${tookDamage} 0.5s;
+  }
+`;
+
+export const EnemyImage = styled.img`
+  filter: grayscale(100%) sepia(100%) hue-rotate(33deg) saturate(6);
+  width: 80px;
+  height: 80px;
+  &.enemy-attack-animation {
+    animation: ${enemyAttack} 0.5s;
+  }
+  &.enemy-damage-animation {
+    animation: ${enemyTookDamage} 0.5s;
+  }
+`;
+
 export const Console = styled(ContainerDefault)`
   scale: 1.4;
   background: ${Padrao.colors.white};
@@ -83,7 +175,7 @@ export const Button = styled(ContainerDefault)`
   height: 35px;
   border-radius: 50%;
   cursor: pointer;
-  pointer-events:  ${(props) => (props.disabled ? 'none' : 'normal')};
+  pointer-events: ${(props) => (props.disabled ? "none" : "normal")};
   margin: ${(props) => (props.disabled ? "-4px 0 0 1px" : "0")};
   filter: drop-shadow(
     ${(props) =>
@@ -104,7 +196,8 @@ export const StartButton = styled(Button)`
   border-radius: 15px;
   margin: 0 !important;
   filter: drop-shadow(-1px 2px 0px ${Padrao.colors.dark});
-  background: ${(props) => (props.disabled ? Padrao.colors.grey : Padrao.colors.red )};
+  background: ${(props) =>
+    props.disabled ? Padrao.colors.grey : Padrao.colors.red};
 
   color: ${Padrao.colors.dark};
 `;

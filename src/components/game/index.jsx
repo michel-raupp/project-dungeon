@@ -2,21 +2,70 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import {
   Button,
   Console,
+  EnemyImage,
+  PlayerImage,
   Screen,
   StartButton,
   StyledHome,
 } from "../../styles/styles";
-import overlay from "../../assets/gameboy-2.png";
 
 const getRandomEnemy = () => {
   const enemyTypes = [
-    { name: "Slime", maxHealth: 10, atk: 3, xp: 4 },
-    { name: "Goblin", maxHealth: 22, atk: 5, xp: 10 },
-    { name: "Orc", maxHealth: 24, atk: 7, xp: 15 },
-    { name: "Spider", maxHealth: 7, atk: 12, xp: 6 },
-    { name: "Thief", maxHealth: 30, atk: 10, xp: 25 },
-    { name: "Wolf", maxHealth: 18, atk: 8, xp: 11 },
-    { name: "Dragon", maxHealth: 100, atk: 20, xp: 300 },
+    {
+      name: "Goblin",
+      maxHealth: 10,
+      atk: 3,
+      xp: 4,
+      img: "./assets/goblin.png",
+    },
+    {
+      name: "Goblin",
+      maxHealth: 22,
+      atk: 5,
+      xp: 10,
+      img: "./assets/goblin.png",
+    },
+    {
+      name: "Goblin",
+      maxHealth: 24,
+      atk: 7,
+      xp: 15,
+      img: "./assets/goblin.png",
+    },
+    {
+      name: "Spider",
+      maxHealth: 7,
+      atk: 12,
+      xp: 6,
+      img: "./assets/spider.png",
+    },
+    {
+      name: "Spider",
+      maxHealth: 7,
+      atk: 12,
+      xp: 6,
+      img: "./assets/spider.png",
+    },
+    {
+      name: "Spider",
+      maxHealth: 7,
+      atk: 12,
+      xp: 6,
+      img: "./assets/spider.png",
+    },
+    { name: "Thief", maxHealth: 30, atk: 10, xp: 25, img: "./assets/ppl.png" },
+    { name: "Thief", maxHealth: 30, atk: 10, xp: 25, img: "./assets/ppl.png" },
+    { name: "Thief", maxHealth: 30, atk: 10, xp: 25, img: "./assets/ppl.png" },
+    { name: "Wolf", maxHealth: 18, atk: 8, xp: 11, img: "./assets/wolf.png" },
+    { name: "Wolf", maxHealth: 18, atk: 8, xp: 11, img: "./assets/wolf.png" },
+    { name: "Wolf", maxHealth: 18, atk: 8, xp: 11, img: "./assets/wolf.png" },
+    {
+      name: "Dragon",
+      maxHealth: 100,
+      atk: 20,
+      xp: 300,
+      img: "./assets/dragon.png",
+    },
   ];
 
   const randomIndex = Math.floor(Math.random() * enemyTypes.length);
@@ -40,6 +89,7 @@ const Game = () => {
       xp: 0,
       level: 1,
       xpToLevelUp: 100,
+      img: "./assets/red-mage.webp",
     }),
     []
   );
@@ -70,6 +120,17 @@ const Game = () => {
     const manaCost = isMagicAttack ? 20 : 0;
     const updatedPlayer = { ...player };
     updatedPlayer.mana -= manaCost;
+
+    // Attack animation
+    const playerImageElement = document.querySelector(".player-img");
+    const enemyImageElement = document.querySelector(".enemy-img");
+    playerImageElement.classList.add("player-attack-animation");
+    enemyImageElement.classList.add("enemy-damage-animation");
+
+    setTimeout(() => {
+      playerImageElement.classList.remove("player-attack-animation");
+      enemyImageElement.classList.remove("enemy-damage-animation");
+    }, 500);
 
     if (currentEnemy.health <= 0) {
       // Enemy defeated
@@ -150,6 +211,16 @@ const Game = () => {
     } else {
       // Player still alive
       setMessage(`The ${currentEnemy.name} attacked you for ${damage} damage.`);
+      // Took Damage animation
+      const playerImageElement = document.querySelector(".player-img");
+      const enemyImageElement = document.querySelector(".enemy-img");
+      playerImageElement.classList.add("player-damage-animation");
+      enemyImageElement.classList.add("enemy-attack-animation");
+
+      setTimeout(() => {
+        playerImageElement.classList.remove("player-damage-animation");
+        enemyImageElement.classList.remove("enemy-attack-animation");
+      }, 500);
       setPlayer(updatedPlayer);
     }
   }, [isPlayerTurn, gameOver, player, enemies, currentEnemyIndex]);
@@ -234,7 +305,18 @@ const Game = () => {
               <p>
                 lvl: {player.level} / xp: {player.xp} / {player.xpToLevelUp}
               </p>
-              <p>Current Enemy: {enemies[currentEnemyIndex].name}</p>
+              <div className="sprites">
+                <EnemyImage
+                  className="enemy-img"
+                  src={enemies[currentEnemyIndex].img}
+                  alt={enemies[currentEnemyIndex].name}
+                />
+                <PlayerImage
+                  className="player-img"
+                  src={player.img}
+                  alt="player"
+                />
+              </div>
               <p>Enemy Health: {enemies[currentEnemyIndex].health}</p>
               <p>{message}</p>
             </Screen>
