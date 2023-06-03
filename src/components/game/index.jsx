@@ -85,7 +85,7 @@ const Game = () => {
       health: 60,
       maxMana: 30,
       mana: 30,
-      attack: 50,
+      attack: 5,
       xp: 0,
       level: 1,
       xpToLevelUp: 20,
