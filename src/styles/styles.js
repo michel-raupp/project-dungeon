@@ -86,9 +86,6 @@ export const StyledHome = styled(ContainerDefault)`
   width: 100%;
   height: 100vh;
   background: ${Padrao.colors.black};
-  p {
-    font-size: 12px;
-  }
 
   .sprites {
     display: flex;
@@ -164,8 +161,25 @@ export const Console = styled(ContainerDefault)`
     font-size: 120px;
     border-radius: 15px;
     font-weight: bold;
+    font-family: sans-serif;
     color: ${Padrao.colors.grey};
     filter: drop-shadow(2px 2px 0px ${Padrao.colors.dark});
+  }
+.huds{
+    align-items: flex-start;
+}
+  .enemy-hud,
+  .player-hud {
+    display: flex;
+    flex-direction: column;
+  }
+  .player-hud p {
+    width: 100%;
+  }
+  .message{
+    height: 40px;
+    font-size: 6px;
+    line-height: 1.4;
   }
 `;
 
@@ -206,6 +220,7 @@ export const Screen = styled(ContainerDefault)`
   background: ${Padrao.colors.primary};
   width: 160px;
   height: 140px;
+  padding: 10px;
   border: 5px solid ${Padrao.colors.black};
   flex-direction: column;
 `;

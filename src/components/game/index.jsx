@@ -88,7 +88,7 @@ const Game = () => {
       attack: 5,
       xp: 0,
       level: 1,
-      xpToLevelUp: 100,
+      xpToLevelUp: 20,
       img: "./assets/red-mage.webp",
     }),
     []
@@ -107,50 +107,50 @@ const Game = () => {
     if (!isPlayerTurn || gameOver) {
       return; // Prevent attack if it's not the player's turn or the game is over
     }
-
+  
     const updatedEnemies = [...enemies];
     const currentEnemy = updatedEnemies[currentEnemyIndex];
-
+  
     const playerDamage = isMagicAttack
       ? Math.floor(currentEnemy.maxHealth * 0.3)
       : player.attack;
     currentEnemy.health -= playerDamage;
-
+  
     // Update mana consumption
     const manaCost = isMagicAttack ? 20 : 0;
-    const updatedPlayer = { ...player };
+    const updatedPlayer = JSON.parse(JSON.stringify(player));
     updatedPlayer.mana -= manaCost;
-
+  
     // Attack animation
     const playerImageElement = document.querySelector(".player-img");
     const enemyImageElement = document.querySelector(".enemy-img");
     playerImageElement.classList.add("player-attack-animation");
     enemyImageElement.classList.add("enemy-damage-animation");
-
+  
     setTimeout(() => {
       playerImageElement.classList.remove("player-attack-animation");
       enemyImageElement.classList.remove("enemy-damage-animation");
     }, 500);
-
+  
     if (currentEnemy.health <= 0) {
       // Enemy defeated
       currentEnemy.health = 0; // Ensure health doesn't go below 0
-
+  
       // Increase player XP
       const xpGained = currentEnemy.xp;
-      const updatedPlayer = { ...player };
       updatedPlayer.xp += xpGained;
-
+  
       // Check if player levels up
       if (updatedPlayer.xp >= updatedPlayer.xpToLevelUp) {
-        updatedPlayer.xp = 0;
+        const xpOverflow = updatedPlayer.xp - updatedPlayer.xpToLevelUp;
+        updatedPlayer.xp = xpOverflow;
         updatedPlayer.level++;
-        updatedPlayer.xpToLevelUp = updatedPlayer.xpToLevelUp + randomNumber;
-        updatedPlayer.maxHealth += randomNumber;
+        updatedPlayer.xpToLevelUp += 20;
+        updatedPlayer.maxHealth += 10;
         updatedPlayer.health = updatedPlayer.maxHealth;
-        updatedPlayer.maxMana += randomNumber;
+        updatedPlayer.maxMana += 5;
         updatedPlayer.mana = updatedPlayer.maxMana;
-        updatedPlayer.attack += randomNumber;
+        updatedPlayer.attack += 2;
         setMessage(
           `Congratulations! You leveled up to Level ${updatedPlayer.level}!`
         );
@@ -158,29 +158,29 @@ const Game = () => {
         setMessage(
           `You defeated the ${currentEnemy.name} and gained ${xpGained} XP.`
         );
-
         setIsPlayerTurn(false);
       }
-
+  
       setPlayer(updatedPlayer);
-
+  
+  
       // Continue to the next enemy
       const nextEnemyIndex = currentEnemyIndex + 1;
       setCurrentEnemyIndex(nextEnemyIndex);
-
+  
       // Reset the health of the next enemy
       const nextEnemy = getRandomEnemy();
       updatedEnemies[nextEnemyIndex] = nextEnemy;
       setTimeout(() => {
-        setMessage(`The ${currentEnemy.name} arrived! Defend yourself!`);
-      }, 1000); // Delay of 2 seconds before showing the next enemy arrival message
+        setMessage(`A new enemy came up! Prepare to fight!`);
+      }, 500); // Delay of 2 seconds before showing the next enemy arrival message
     } else {
       // Enemy still alive
       setMessage(
         `You attacked the ${currentEnemy.name} and dealt ${playerDamage} damage.`
       );
     }
-
+  
     setPlayer(updatedPlayer);
     setEnemies(updatedEnemies);
   }, [
@@ -188,7 +188,6 @@ const Game = () => {
     enemies,
     currentEnemyIndex,
     isMagicAttack,
-    randomNumber,
     isPlayerTurn,
     gameOver,
   ]);
@@ -207,10 +206,13 @@ const Game = () => {
     if (updatedPlayer.health <= 0) {
       // Player defeated
       setMessage(`You were defeated by the ${currentEnemy.name}. Game Over!`);
+      updatedPlayer.health = 0;
       setGameOver(true);
     } else {
       // Player still alive
-      setMessage(`The ${currentEnemy.name} attacked you for ${damage} damage.`);
+      setMessage(
+        `The ${currentEnemy.name} attacked! You took ${damage} damage.`
+      );
       // Took Damage animation
       const playerImageElement = document.querySelector(".player-img");
       const enemyImageElement = document.querySelector(".enemy-img");
@@ -297,14 +299,25 @@ const Game = () => {
         <Console>
           <div className="frame">
             <Screen>
-              <p>Health: {player.health}</p>
-              <p>
-                Mana: {player.mana} / {player.maxMana}
-              </p>
-              <p>Attack: {player.attack}</p>
-              <p>
-                lvl: {player.level} / xp: {player.xp} / {player.xpToLevelUp}
-              </p>
+              <div className="organizador huds">
+                <div className="enemy-hud">
+                  <p>{enemies[currentEnemyIndex].name}</p>
+                  <p>HP: {enemies[currentEnemyIndex].health}</p>
+                </div>
+                <div className="player-hud">
+                  <p>
+                    HP: {player.health}/{player.maxHealth}
+                  </p>
+                  <p>
+                    MP: {player.mana}/{player.maxMana}
+                  </p>
+                  <p>Atk: {player.attack}</p>
+                  <p>lvl: {player.level}</p>
+                  <p>
+                    xp: {player.xp}/{player.xpToLevelUp}
+                  </p>
+                </div>
+              </div>
               <div className="sprites">
                 <EnemyImage
                   className="enemy-img"
@@ -317,8 +330,8 @@ const Game = () => {
                   alt="player"
                 />
               </div>
-              <p>Enemy Health: {enemies[currentEnemyIndex].health}</p>
-              <p>{message}</p>
+
+              <p className="message">{message}</p>
             </Screen>
           </div>
           <div className="organizador">

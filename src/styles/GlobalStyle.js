@@ -33,8 +33,8 @@ const GlobalStyle = createGlobalStyle`
     }
     body {
         margin: 0;
-        font-family: 'Poppins', sans-serif;
-        line-height: 1.5;
+        font-family: 'Press Start 2P', cursive;
+        line-height: 1;
     }
     ol, ul {
         list-style: none;
