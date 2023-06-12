@@ -81,14 +81,14 @@ const Game = () => {
   const initialPlayerState = useMemo(
     () => ({
       name: "Player",
-      maxHealth: 60,
+      maxHealth: 600,
       health: 60,
       maxMana: 30,
       mana: 30,
-      attack: 5,
+      attack: 1,
       xp: 0,
       level: 1,
-      xpToLevelUp: 20,
+      xpToLevelUp: 200,
       img: "./assets/red-mage.webp",
     }),
     []
@@ -103,10 +103,15 @@ const Game = () => {
   const randomNumber = Math.floor(Math.random() * 2) + 1;
   const [enemies, setEnemies] = useState([getRandomEnemy()]);
 
+
+
   const playerAttack = useCallback(() => {
     if (!isPlayerTurn || gameOver) {
       return; // Prevent attack if it's not the player's turn or the game is over
     }
+
+    const playerImageElement = document.querySelector(".player-img");
+    const enemyImageElement = document.querySelector(".enemy-img");
 
     const updatedEnemies = [...enemies];
     const currentEnemy = updatedEnemies[currentEnemyIndex];
@@ -114,92 +119,114 @@ const Game = () => {
     let playerDamage;
     let updatedPlayer = { ...player };
 
-    if (isMagicAttack && player.mana >= 20) {
-      playerDamage = Math.floor(player.attack * 3);
-      updatedPlayer.mana -= 20;
-      console.log("Magic Attack");
-      console.log("Player Mana:", updatedPlayer.mana);
-    } else {
-      playerDamage = player.attack;
-      console.log("Normal Attack");
-      updatedPlayer.mana += 3; // Add 3 mana for normal attack
-      if (updatedPlayer.mana > updatedPlayer.maxMana) {
-        updatedPlayer.mana = updatedPlayer.maxMana;
-      }
-    }
+    const criticalHitChance = Math.random(); // Generate a random number between 0 and 1 for critical hit chance
+    const isCriticalHit = criticalHitChance < 0.1; // 10% critical hit chance
 
-    currentEnemy.health -= playerDamage;
+    const missChance = Math.random(); // Generate a random number between 0 and 1 for critical hit chance
+    const isMissed = missChance < 0.1; // Assuming a 20% critical hit chance
 
-    // Attack animation
-    const playerImageElement = document.querySelector(".player-img");
-    const enemyImageElement = document.querySelector(".enemy-img");
-    playerImageElement.classList.add("player-attack-animation");
-    enemyImageElement.classList.add("enemy-damage-animation");
+    if (isMissed) {
 
-    setTimeout(() => {
-      playerImageElement.classList.remove("player-attack-animation");
-      enemyImageElement.classList.remove("enemy-damage-animation");
-    }, 500);
-
-    if (currentEnemy.health <= 0) {
-      // Enemy defeated
-      currentEnemy.health = 0; // Ensure health doesn't go below 0
-
-      // Increase player XP
-      const xpGained = currentEnemy.xp;
-      updatedPlayer.xp += xpGained;
-
-      // Check if player levels up
-      while (updatedPlayer.xp >= updatedPlayer.xpToLevelUp) {
-        // Deduct XP and level up multiple times if necessary
-        updatedPlayer.xp -= updatedPlayer.xpToLevelUp;
-        updatedPlayer.level++;
-        updatedPlayer.xpToLevelUp += 20;
-        updatedPlayer.maxHealth += 10;
-        updatedPlayer.health = updatedPlayer.maxHealth;
-        updatedPlayer.maxMana += 5;
-        updatedPlayer.mana = updatedPlayer.maxMana;
-        updatedPlayer.attack += 2;
-        setMessage(
-          `Congratulations! You leveled up to Level ${updatedPlayer.level}!`
-        );
-      }
-      if (updatedPlayer.xp > 0) {
-        setMessage(
-          `You defeated the ${currentEnemy.name} and gained ${xpGained} XP.`
-        );
-      } else {
-        setMessage(
-          `You defeated the ${currentEnemy.name} and leveled up to Level ${updatedPlayer.level}!`
-        );
-      }
-
-      setPlayer(updatedPlayer);
-
-      // Continue to the next enemy
-      const nextEnemyIndex = currentEnemyIndex + 1;
-      setCurrentEnemyIndex(nextEnemyIndex);
-
-      // Reset the health of the next enemy
-      const nextEnemy = getRandomEnemy();
-      updatedEnemies[nextEnemyIndex] = nextEnemy;
-      setTimeout(() => {
-        setMessage(`A new enemy came up! Prepare to fight!`);
-      }, 500); // Delay of 2 seconds before showing the next enemy arrival message
-    } else {
-      // Enemy still alive
+      console.log("Attack missed!");
       setMessage(
-        `You attacked the ${currentEnemy.name} and dealt ${playerDamage} damage.`
+        `Oh no, the enemy dodged your attack!!`
       );
+      playerImageElement.classList.add("player-attack-animation");
+      enemyImageElement.classList.add("enemy-dodged-animation");
+
+      setTimeout(() => {
+        playerImageElement.classList.remove("player-attack-animation");
+        enemyImageElement.classList.remove("enemy-dodged-animation");
+      }, 500);
+      setIsPlayerTurn(false)
     }
+    else {
+      if (isCriticalHit) {
+        // Critical hit: deal 200% of the base attack
+        playerDamage = Math.floor(player.attack * 2);
+        console.log("Critical Hit!");
+
+      } else {
+        // Normal hit: deal the base attack
+        playerDamage = player.attack;
+      }
+
+      // Player gets hit by the enemy's attack
+      updatedPlayer.health -= currentEnemy.attack;
+      currentEnemy.health -= playerDamage;
+
+      // Attack animation
+
+      playerImageElement.classList.add("player-attack-animation");
+      enemyImageElement.classList.add("enemy-damage-animation");
+
+      setTimeout(() => {
+        playerImageElement.classList.remove("player-attack-animation");
+        enemyImageElement.classList.remove("enemy-damage-animation");
+      }, 500);
+
+      if (currentEnemy.health <= 0) {
+        // Enemy defeated
+        currentEnemy.health = 0; // Ensure health doesn't go below 0
+
+        // Increase player XP
+        const xpGained = currentEnemy.xp;
+        updatedPlayer.xp += xpGained;
+
+        // Check if player levels up
+        while (updatedPlayer.xp >= updatedPlayer.xpToLevelUp) {
+          // Deduct XP and level up multiple times if necessary
+          updatedPlayer.xp -= updatedPlayer.xpToLevelUp;
+          updatedPlayer.level++;
+          updatedPlayer.xpToLevelUp += 20;
+          updatedPlayer.maxHealth += 10;
+          updatedPlayer.health = updatedPlayer.maxHealth;
+          updatedPlayer.maxMana += 5;
+          updatedPlayer.mana = updatedPlayer.maxMana;
+          updatedPlayer.attack += 2;
+          setMessage(
+            `Congratulations! You leveled up to Level ${updatedPlayer.level}!`
+          );
+        }
+        if (updatedPlayer.xp > 0) {
+          setMessage(
+            `You defeated the ${currentEnemy.name} and gained ${xpGained} XP.`
+          );
+        } else {
+          setMessage(
+            `You defeated the ${currentEnemy.name} and leveled up to Level ${updatedPlayer.level}!`
+          );
+        }
+
+        setPlayer(updatedPlayer);
+
+        // Continue to the next enemy
+        const nextEnemyIndex = currentEnemyIndex + 1;
+        setCurrentEnemyIndex(nextEnemyIndex);
+
+        // Reset the health of the next enemy
+        const nextEnemy = getRandomEnemy();
+        updatedEnemies[nextEnemyIndex] = nextEnemy;
+        setTimeout(() => {
+          setMessage(`A new enemy came up! Prepare to fight!`);
+        }, 500); // Delay of 2 seconds before showing the next enemy arrival message
+      } else {
+        // Enemy still alive
+        setMessage(
+          `You attacked the ${currentEnemy.name} and dealt ${playerDamage} damage.`
+        );
+      }
+    }
+
 
     setEnemies(updatedEnemies);
-    setIsMagicAttack(false); // Reset the magic attack flag after the attack
+    setEnemies(updatedEnemies);
+    setIsPlayerTurn(false);
   }, [
+
     player,
     enemies,
     currentEnemyIndex,
-    isMagicAttack,
     isPlayerTurn,
     gameOver,
   ]);
@@ -212,30 +239,48 @@ const Game = () => {
     const updatedPlayer = { ...player };
     const currentEnemy = enemies[currentEnemyIndex];
 
-    const damage = currentEnemy.atk; // Access 'atk' property directly
-    updatedPlayer.health -= damage;
+    const dodgeChance = Math.random(); // Generate a random number between 0 and 1 for dodge chance
+    const isDodge = dodgeChance < 0.2; // 20% dodge chance
 
-    if (updatedPlayer.health <= 0) {
-      // Player defeated
-      setMessage(`You were defeated by the ${currentEnemy.name}. Game Over!`);
-      updatedPlayer.health = 0;
-      setGameOver(true);
-    } else {
-      // Player still alive
-      setMessage(
-        `The ${currentEnemy.name} attacked! You took ${damage} damage.`
-      );
-      // Took Damage animation
-      const playerImageElement = document.querySelector(".player-img");
-      const enemyImageElement = document.querySelector(".enemy-img");
-      playerImageElement.classList.add("player-damage-animation");
+    const playerImageElement = document.querySelector(".player-img");
+    const enemyImageElement = document.querySelector(".enemy-img");
+
+    if (isDodge) {
+      // Player dodges the attack
+      setIsPlayerTurn(true);
+      setMessage(`You dodged the ${currentEnemy.name}'s attack!`);
+      playerImageElement.classList.add("player-dodged-animation");
       enemyImageElement.classList.add("enemy-attack-animation");
-
       setTimeout(() => {
-        playerImageElement.classList.remove("player-damage-animation");
+        playerImageElement.classList.remove("player-dodged-animation");
         enemyImageElement.classList.remove("enemy-attack-animation");
       }, 500);
-      setPlayer(updatedPlayer);
+
+    } else {
+      const damage = currentEnemy.atk; // Access 'atk' property directly
+      updatedPlayer.health -= damage;
+
+      if (updatedPlayer.health <= 0) {
+        // Player defeated
+        setMessage(`You were defeated by the ${currentEnemy.name}. Game Over!`);
+        updatedPlayer.health = 0;
+        setGameOver(true);
+      } else {
+        // Player still alive
+        setMessage(
+          `The ${currentEnemy.name} attacked! You took ${damage} damage.`
+        );
+        // Took Damage animation
+
+        playerImageElement.classList.add("player-damage-animation");
+        enemyImageElement.classList.add("enemy-attack-animation");
+
+        setTimeout(() => {
+          playerImageElement.classList.remove("player-damage-animation");
+          enemyImageElement.classList.remove("enemy-attack-animation");
+        }, 500);
+        setPlayer(updatedPlayer);
+      }
     }
   }, [isPlayerTurn, gameOver, player, enemies, currentEnemyIndex]);
 
@@ -253,12 +298,13 @@ const Game = () => {
       // Attack animation
       const playerImageElement = document.querySelector(".player-img");
       const enemyImageElement = document.querySelector(".enemy-img");
-      playerImageElement.classList.add("player-attack-animation");
-      enemyImageElement.classList.add("enemy-damage-animation");
+      playerImageElement.classList.add("magic-attack-animation");
+      
 
       setTimeout(() => {
-        playerImageElement.classList.remove("player-attack-animation");
-        enemyImageElement.classList.remove("enemy-damage-animation");
+        enemyImageElement.classList.add("enemy-damage-animation");
+        playerImageElement.classList.remove("magic-attack-animation");
+        
       }, 500);
       const updatedEnemies = [...enemies];
       const currentEnemy = updatedEnemies[currentEnemyIndex];
