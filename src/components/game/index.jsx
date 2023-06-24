@@ -487,7 +487,7 @@ const Game = () => {
 
     } else {
       const damage = currentEnemy.atk; // Access 'atk' property directly
-      updatedPlayer.health -= damage;
+      // updatedPlayer.health -= damage;
 
       if (updatedPlayer.health <= 0) {
         // Player defeated
