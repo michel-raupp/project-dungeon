@@ -109,52 +109,52 @@ const getRandomEnemy = () => {
   const enemyTypes = [
     {
       name: "Goblin",
-      maxHealth: 10,
-      atk: 0,
-      xp: 4,
+      maxHealth: 12,
+      atk: 3,
+      xp: 6,
       img: "./assets/goblin.png",
     },
     {
       name: "Goblin",
-      maxHealth: 22,
-      atk: 5,
+      maxHealth: 18,
+      atk: 4,
       xp: 10,
       img: "./assets/goblin.png",
     },
     {
       name: "Goblin",
-      maxHealth: 24,
-      atk: 7,
-      xp: 15,
+      maxHealth: 20,
+      atk: 5,
+      xp: 12,
       img: "./assets/goblin.png",
     },
     {
       name: "Spider",
-      maxHealth: 7,
-      atk: 12,
-      xp: 6,
+      maxHealth: 14,
+      atk: 6,
+      xp: 8,
       img: "./assets/spider.png",
     },
     {
       name: "Spider",
-      maxHealth: 7,
-      atk: 12,
-      xp: 6,
+      maxHealth: 20,
+      atk: 7,
+      xp: 10,
       img: "./assets/spider.png",
     },
     {
       name: "Spider",
-      maxHealth: 7,
-      atk: 12,
-      xp: 6,
+      maxHealth: 22,
+      atk: 8,
+      xp: 12,
       img: "./assets/spider.png",
     },
-    { name: "Thief", maxHealth: 30, atk: 10, xp: 25, img: "./assets/ppl.png" },
-    { name: "Thief", maxHealth: 30, atk: 10, xp: 25, img: "./assets/ppl.png" },
-    { name: "Thief", maxHealth: 30, atk: 10, xp: 25, img: "./assets/ppl.png" },
-    { name: "Wolf", maxHealth: 18, atk: 8, xp: 11, img: "./assets/wolf.png" },
-    { name: "Wolf", maxHealth: 18, atk: 8, xp: 11, img: "./assets/wolf.png" },
-    { name: "Wolf", maxHealth: 18, atk: 8, xp: 11, img: "./assets/wolf.png" },
+    { name: "Thief", maxHealth: 28, atk: 9, xp: 20, img: "./assets/ppl.png" },
+    { name: "Thief", maxHealth: 28, atk: 9, xp: 20, img: "./assets/ppl.png" },
+    { name: "Thief", maxHealth: 28, atk: 9, xp: 20, img: "./assets/ppl.png" },
+    { name: "Wolf", maxHealth: 16, atk: 7, xp: 10, img: "./assets/wolf.png" },
+    { name: "Wolf", maxHealth: 16, atk: 7, xp: 10, img: "./assets/wolf.png" },
+    { name: "Wolf", maxHealth: 16, atk: 7, xp: 10, img: "./assets/wolf.png" },
     {
       name: "Dragon",
       maxHealth: 100,
@@ -163,6 +163,7 @@ const getRandomEnemy = () => {
       img: "./assets/dragon.png",
     }
   ];
+  
 
   const randomIndex = Math.floor(Math.random() * enemyTypes.length);
   const randomEnemy = enemyTypes[randomIndex];
@@ -512,7 +513,15 @@ const Game = () => {
           playerImageElement.classList.remove("player-damage-animation");
           enemyImageElement.classList.remove("enemy-attack-animation");
         }, 500);
+        if (updatedPlayer.health <= 0) {
+          // Player defeated
+          setMessage(`You were defeated by the ${currentEnemy.name}. Game Over!`);
+          console.log('game over')
+          updatedPlayer.health = 0;
+          setGameOver(true);
+        }
         setPlayer(updatedPlayer);
+        
       }
     }
 
