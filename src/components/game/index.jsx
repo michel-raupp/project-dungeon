@@ -181,7 +181,7 @@ const Game = () => {
       health: 40,
       maxMana: 30,
       mana: 30,
-      attack: 3,
+      attack: 5,
       swordDamage: 0,
       shieldHealth: 0,
       xp: 0,
@@ -257,7 +257,7 @@ const Game = () => {
             updatedPlayer.swordDamage = foundItem.attributes.damageBonus;
             updatedPlayer.attack += updatedPlayer.swordDamage; // Add the new sword damage
             setPlayer(updatedPlayer); // Update the player state
-            console.log(`You found a better sword (${foundItem.name}) (${foundItem.attributes.damageBonus} ATK)! (${foundItem.quantity})Your attack has increased to ${updatedPlayer.attack}.`);
+            console.log(`You found a better sword (${foundItem.name}) (${foundItem.attributes.damageBonus} ATK)! Your attack has increased to ${updatedPlayer.attack}.`);
           }
           else {
             console.log(`You found a worse sword (${foundItem.name}) (${foundItem.attributes.damageBonus} ATK)! Your attack remains the same.`);
@@ -370,6 +370,15 @@ const Game = () => {
           updatedPlayer.mana = updatedPlayer.maxMana;
           updatedPlayer.attack += randomStatsNumber.attack;
           setMessage(`Congratulations! You leveled up to Level ${updatedPlayer.level}!`);
+          console.log("");
+          console.log(`Level UP! You're now Level ${updatedPlayer.level}`)
+          console.log("=========Player Stats=========")
+          console.log(`HP: ${updatedPlayer.maxHealth} / SHIELD: ${updatedPlayer.shieldHealth}`);
+          console.log(`MP: ${updatedPlayer.maxMana}`);
+          console.log(`ATK: ${updatedPlayer.attack} / SWORD: (${updatedPlayer.swordDamage})`);
+          console.log(`XP: ${updatedPlayer.xp} / ${updatedPlayer.xpToLevelUp}`);
+          console.log("------------------------------")
+          console.log("");
         }
 
         setMessage(`You defeated the ${currentEnemy.name} and dealt ${playerDamage} damage.`);
