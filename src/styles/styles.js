@@ -222,7 +222,9 @@ export const ContainerDefault = styled.div`
 export const StyledHome = styled(ContainerDefault)`
   width: 100%;
   height: 100vh;
-  background: ${Padrao.colors.black};
+  background: #fff;
+  flex-direction: column;
+  gap: 20px;
 
   .sprites {
     display: flex;
@@ -268,7 +270,7 @@ export const EnemyImage = styled.img`
 `;
 
 export const Console = styled(ContainerDefault)`
-  scale: 1.4;
+  /* scale: 1.4; */
   background: ${Padrao.colors.white};
   height: fit-content;
   padding: 20px 15px 40px 15px;
