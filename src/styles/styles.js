@@ -214,6 +214,8 @@ export const Padrao = {
 };
 
 export const ContainerDefault = styled.div`
+  
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -222,16 +224,26 @@ export const ContainerDefault = styled.div`
 export const StyledHome = styled(ContainerDefault)`
   width: 100%;
   height: 100vh;
-  background: #fff;
-  flex-direction: column;
-  gap: 20px;
-
+  background: ${Padrao.colors.black};
+  flex-direction: row;
+  gap: 80px;
   .sprites {
     display: flex;
     align-items: flex-end;
     width: 100%;
     justify-content: space-between;
   }
+
+   @media(max-width: 768px){
+    gap: 20px;
+  } 
+  @media(max-width: 550px){
+    flex-direction: column;
+    padding: 10px 0;
+    gap: 60px;
+    justify-content: flex-start;
+    height: auto;
+  } 
 `;
 
 export const PlayerImage = styled.img`
@@ -270,9 +282,10 @@ export const EnemyImage = styled.img`
 `;
 
 export const Console = styled(ContainerDefault)`
-  /* scale: 1.4; */
+  scale: 1.4;  
   background: ${Padrao.colors.white};
   height: fit-content;
+  margin-left: 50px;
   padding: 20px 15px 40px 15px;
   border-radius: 10px 10px 50px 10px;
   gap: 20px;
@@ -314,9 +327,9 @@ export const Console = styled(ContainerDefault)`
     color: ${Padrao.colors.grey};
     filter: drop-shadow(2px 2px 0px ${Padrao.colors.dark});
   }
-.huds{
-    align-items: flex-start;
-}
+  .huds{
+      align-items: flex-start;
+  }
   .enemy-hud,
   .player-hud {
     display: flex;
@@ -329,6 +342,11 @@ export const Console = styled(ContainerDefault)`
     height: 40px;
     font-size: 6px;
     line-height: 1.4;
+  }
+
+  @media(max-width: 768px){
+    scale: 1;
+    margin: 0;
   }
 `;
 
@@ -380,3 +398,55 @@ export const ActionWindow = styled(ContainerDefault)`
   height: 140px;
   border: 5px solid ${Padrao.colors.black};
 `;
+
+export const ConsoleLog = styled(ContainerDefault)`
+  flex-direction: column;
+  justify-content: flex-start;
+  border: 5px solid ${Padrao.colors.white};
+  background-color: ${Padrao.colors.black};
+  padding: 10px;
+  height: 540px;
+  gap: 10px;
+  border-radius: 8px;
+  filter: drop-shadow(5px 5px 0px ${Padrao.colors.grey});
+  p{
+    color: ${Padrao.colors.white};
+    font-size: 12px;
+  }
+  ul{
+
+    border-radius: 8px;
+    padding: 10px;
+    overflow-y: hidden;
+    width: 300px;
+    height: 100%;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 10px;
+  }
+  li{
+    border: 1px solid ${Padrao.colors.white};
+    padding: 10px;
+    font-size: 8px;
+    line-height: 1.2;
+  }
+
+  @media(max-width: 768px){
+    height: 380px;
+    ul{
+      width: 200px;
+    }
+  }
+
+  @media(max-width: 550px){
+    ul{
+      padding: 0;
+      width: 270px;
+    }
+    li{
+      line-height: 1.4;
+      font-size: 7px;
+    }
+  }
+  
+`

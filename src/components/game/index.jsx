@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import {
   Button,
   Console,
+  ConsoleLog,
   EnemyImage,
   PlayerImage,
   Screen,
@@ -102,6 +103,9 @@ const items = [
   }
 ];
 
+// Function to check if a random event occurs and return the found item
+
+
 const getRandomEnemy = () => {
   const enemyTypes = [
     {
@@ -180,14 +184,13 @@ const Game = () => {
       health: 40,
       maxMana: 30,
       mana: 30,
-      attack: 50,
+      attack: 5,
       swordDamage: 0,
       shieldHealth: 0,
       xp: 0,
       level: 1,
       xpToLevelUp: 20,
       img: "./assets/red-mage.webp",
-      equipment: [], // initialize an empty array for equipment
     }),
     []
   );
@@ -196,9 +199,59 @@ const Game = () => {
   const [currentEnemyIndex, setCurrentEnemyIndex] = useState(0);
   const [isPlayerTurn, setIsPlayerTurn] = useState(true);
   const [message, setMessage] = useState("");
+  const [messageHistory, setMessageHistory] = useState([]);
   const [gameOver, setGameOver] = useState(false);
   const [isMagicAttack, setIsMagicAttack] = useState(false);
   const [enemies, setEnemies] = useState([getRandomEnemy()]);
+
+  const updateMessage = (newMessage) => {
+    setMessage(newMessage);
+    setMessageHistory((prevHistory) => [...prevHistory, newMessage]);
+  };
+
+  const ulRef = useRef(null); // Declare and initialize the ulRef
+
+  useEffect(() => {
+    if (ulRef.current) {
+      const newestLi = ulRef.current.lastChild;
+      if (newestLi) {
+        newestLi.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [messageHistory]);
+
+  const getMessageColor = (message) => {
+    if (message.includes('Congratulations')) {
+      return 'lime'; // Set the color to green for specific message
+    }
+    if (message.includes('You defeated')) {
+      return 'orangeRed'; // Set the color to red for specific message
+    }
+    if (message.includes('magic')) {
+      return 'cyan'; // Set the color to red for specific message
+    }
+    if (message.includes('found')) {
+      return 'gold'; // Set the color to red for specific message
+    }
+    if (message.includes('You dodged')) {
+      return 'lightSkyBlue'; // Set the color to red for specific message
+    }
+    if (message.includes('critical')) {
+      return 'Magenta'; // Set the color to red for specific message
+    }
+    if (message.includes('the enemy dodged')) {
+      return 'indianRed'; // Set the color to red for specific message
+    }
+    if (message.includes('equipped')) {
+      return 'lawnGreen'; // Set the color to red for specific message
+    }
+    if (message.includes('restore')) {
+      return 'lawnGreen'; // Set the color to red for specific message
+    }
+    // Set default color for other messages
+    return 'white';
+  };
+
 
   const playerAttack = useCallback(() => {
     if (!isPlayerTurn || gameOver) {
@@ -210,7 +263,7 @@ const Game = () => {
       const randomNumber = Math.random();
 
       // Calculate the chance of finding an item (e.g., 20%)
-      const itemChance = .1;
+      const itemChance = .99;
 
       // Check if the random number is less than the item chance
       if (randomNumber < itemChance) {
@@ -226,7 +279,8 @@ const Game = () => {
         if (foundItem.quantity === 0) {
           items.splice(foundItemIndex, 1);
         }
-
+        const newMessage = `You found a ${foundItem.name}!`;
+        updateMessage(newMessage);
         // Apply the item's attributes to the player based on its type
         if (foundItem.type === "Consumable") {
           // It's a consumable item (e.g., potion)
@@ -238,6 +292,9 @@ const Game = () => {
             updatedPlayer.health = Math.min(updatedPlayer.health, updatedPlayer.maxHealth);
             setPlayer(updatedPlayer); // Update the player state
             console.log(`You used a ${foundItem.name} and restored ${foundItem.attributes.healthRestore} health.`);
+
+            const newMessage = `You used a ${foundItem.name} and restored ${foundItem.attributes.healthRestore} health.`;
+            updateMessage(newMessage);
           }
           if (foundItem.attributes.manaRestore) {
             const updatedPlayer = { ...player }; // Create a copy of the player object
@@ -246,6 +303,9 @@ const Game = () => {
             updatedPlayer.mana = Math.min(updatedPlayer.mana, updatedPlayer.maxMana);
             setPlayer(updatedPlayer); // Update the player state
             console.log(`You used a ${foundItem.name} and restored ${foundItem.attributes.manaRestore} mana.`);
+
+            const newMessage = `You used a ${foundItem.name} and restored ${foundItem.attributes.manaRestore} mana.`;
+            updateMessage(newMessage);
           }
         } else if (foundItem.type === "sword") {
           // It's a sword
@@ -256,10 +316,16 @@ const Game = () => {
             updatedPlayer.swordDamage = foundItem.attributes.damageBonus;
             updatedPlayer.attack += updatedPlayer.swordDamage; // Add the new sword damage
             setPlayer(updatedPlayer); // Update the player state
+
+            const newMessage = `You equipped the (${foundItem.name}) (${foundItem.attributes.damageBonus} ATK)! Your attack has increased to ${updatedPlayer.attack}.`;
+            updateMessage(newMessage);
+
             console.log(`You found a better sword (${foundItem.name}) (${foundItem.attributes.damageBonus} ATK)! Your attack has increased to ${updatedPlayer.attack}.`);
           }
           else {
             console.log(`You found a worse sword (${foundItem.name}) (${foundItem.attributes.damageBonus} ATK)! Your attack remains the same.`);
+            const newMessage = `This sword is worse than yours! Your stats remains the same`;
+            updateMessage(newMessage);
           }
         } else if (foundItem.type === "shield") {
           // It's a shield
@@ -268,12 +334,21 @@ const Game = () => {
             const updatedPlayer = { ...player }; // Create a copy of the player object
             updatedPlayer.health -= updatedPlayer.shieldHealth; // Subtract the current shield health
             updatedPlayer.shieldHealth = foundItem.attributes.healthBonus;
-            updatedPlayer.health += updatedPlayer.shieldHealth; // Add the new shield health
+            updatedPlayer.maxHealth += updatedPlayer.shieldHealth; // Add the new shield health
             setPlayer(updatedPlayer); // Update the player state
-            console.log(`You found a better shield (${foundItem.name}) (${foundItem.attributes.healthBonus} HP)! Your health has increased to ${updatedPlayer.health}.`);
+
+            const newMessage = `You equipped the (${foundItem.name}) (${foundItem.attributes.healthBonus} HP)! Your health has increased to ${updatedPlayer.maxHealth}.`;
+            updateMessage(newMessage);
+            
+            setTimeout(() => {
+              console.log(`You found a better shield (${foundItem.name}) (${foundItem.attributes.healthBonus} HP)! Your health has increased to ${updatedPlayer.maxHealth}.`);
+            }, 500);
+
           }
           else {
             console.log(`You found a worse shield (${foundItem.name}) (${foundItem.attributes.healthBonus} HP)! Your health remains the same.`);
+            const newMessage = `This shield is worse than yours! Your stats remains the same`;
+            updateMessage(newMessage);
           }
         }
 
@@ -304,9 +379,11 @@ const Game = () => {
     if (isMissed) {
 
       console.log("Attack missed!");
-      setMessage(
+      const newMessage =
         `Oh no, the enemy dodged your attack!!`
-      );
+        ;
+      updateMessage(newMessage);
+
       playerImageElement.classList.add("player-attack-animation");
       enemyImageElement.classList.add("enemy-dodged-animation");
 
@@ -321,7 +398,8 @@ const Game = () => {
         // Critical hit: deal 200% of the base attack
         playerDamage = Math.floor(updatedPlayer.attack * 2);
         console.log("Critical Hit!");
-
+        const newMessage = `You dealt a critical hit! The enemy took ${playerDamage} damage.`;
+        updateMessage(newMessage);
       } else {
         // Normal hit: deal the base attack
         playerDamage = updatedPlayer.attack;
@@ -343,6 +421,9 @@ const Game = () => {
 
       if (currentEnemy.health - playerDamage <= 0) {
         // Enemy defeated
+        
+        
+
         playerDamage = currentEnemy.health; // Limit player damage to the enemy's remaining health
         currentEnemy.health = 0; // Set enemy health to 0
 
@@ -356,7 +437,8 @@ const Game = () => {
           maxMana: Math.floor(Math.random() * 5) + 5,
           attack: Math.floor(Math.random() * 2) + 1
         };
-
+        const newMessage = `You defeated the ${currentEnemy.name} and gained ${xpGained} XP.`;
+        updateMessage(newMessage);
         // Check if player levels up
         while (updatedPlayer.xp >= updatedPlayer.xpToLevelUp) {
           // Deduct XP and level up multiple times if necessary
@@ -368,8 +450,8 @@ const Game = () => {
           updatedPlayer.maxMana += 3 + randomStatsNumber.maxMana;
           updatedPlayer.mana = updatedPlayer.maxMana;
           updatedPlayer.attack += randomStatsNumber.attack;
-
-          setMessage(`Congratulations! You leveled up to Level ${updatedPlayer.level}!`);
+          const newMessage = `Congratulations! You leveled up to Level ${updatedPlayer.level}!`;
+          updateMessage(newMessage);
           console.log("");
           console.log(`Level UP! You're now Level ${updatedPlayer.level}`)
           console.log("=========Player Stats=========")
@@ -381,45 +463,31 @@ const Game = () => {
           console.log("");
         }
 
-        setMessage(`You defeated the ${currentEnemy.name} and dealt ${playerDamage} damage.`);
-
+        
         // Generate a random event to check if an item is found
         const foundItem = checkRandomEvent();
 
         if (foundItem) {
-          // Item found
-          setMessage(`You found a ${foundItem.name}!`);
           // Apply the item's attributes to the player based on its type
           if (foundItem.type === "Consumable") {
             // It's a consumable item (e.g., potion)
             // Apply the attributes to the player's health or mana
             if (foundItem.attributes.healthRestore) {
-              const newHealth = player.health + foundItem.attributes.healthRestore;
+              updatedPlayer.health += foundItem.attributes.healthRestore;
               // Ensure the health doesn't exceed the maxHealth
-              const updatedHealth = Math.min(newHealth, player.maxHealth);
-              setPlayer((prevPlayer) => ({
-                ...prevPlayer,
-                health: updatedHealth,
-              }));
+              updatedPlayer.health = Math.min(updatedPlayer.health, updatedPlayer.maxHealth);
             }
             if (foundItem.attributes.manaRestore) {
-              const newMana = player.mana + foundItem.attributes.manaRestore;
+              updatedPlayer.mana += foundItem.attributes.manaRestore;
               // Ensure the mana doesn't exceed the maxMana
-              const updatedMana = Math.min(newMana, player.maxMana);
-              setPlayer((prevPlayer) => ({
-                ...prevPlayer,
-                mana: updatedMana,
-              }));
+              updatedPlayer.mana = Math.min(updatedPlayer.mana, updatedPlayer.maxMana);
             }
           } else if (foundItem.type === "sword") {
             // It's a sword
             // Check if the found sword is better than the current one
-            if (foundItem.attributes.damageBonus > player.swordDamage) {
-              setPlayer((prevPlayer) => ({
-                ...prevPlayer,
-                swordDamage: foundItem.attributes.damageBonus,
-                attack: prevPlayer.attack - prevPlayer.swordDamage + foundItem.attributes.damageBonus,
-              }));
+            if (foundItem.attributes.damageBonus > updatedPlayer.swordDamage) {
+              updatedPlayer.swordDamage = foundItem.attributes.damageBonus;
+              updatedPlayer.attack = updatedPlayer.attack - player.swordDamage + updatedPlayer.swordDamage;
             }
           } else if (foundItem.type === "shield") {
             // It's a shield
@@ -427,18 +495,14 @@ const Game = () => {
             if (
               foundItem.attributes.healthBonus &&
               !isNaN(foundItem.attributes.healthBonus) &&
-              foundItem.attributes.healthBonus > player.shieldHealth
+              foundItem.attributes.healthBonus > updatedPlayer.shieldHealth
             ) {
-              const updatedMaxHealth = player.maxHealth + foundItem.attributes.healthBonus;
-              setPlayer((prevPlayer) => ({
-                ...prevPlayer,
-                shieldHealth: foundItem.attributes.healthBonus,
-                maxHealth: updatedMaxHealth,
-              }));
+              updatedPlayer.shieldHealth = foundItem.attributes.healthBonus;
+              // Update the player's health with the new shield health
+              updatedPlayer.maxHealth += foundItem.attributes.healthBonus;
             }
           }
         }
-
 
         setPlayer(updatedPlayer);
 
@@ -450,21 +514,22 @@ const Game = () => {
         const nextEnemy = getRandomEnemy();
         updatedEnemies[nextEnemyIndex] = nextEnemy;
         setTimeout(() => {
-          setMessage(`A new enemy came up! Prepare to fight!`);
+          const newMessage = `A new enemy came up! Prepare to fight!`;
+          updateMessage(newMessage);
         }, 500); // Delay of 2 seconds before showing the next enemy arrival message
         console.log(`new enemy: ${currentEnemy.name}`);
         console.log(`player health: ${player.health}`);
       } else {
         // Enemy still alive
-        setMessage(`You attacked the ${currentEnemy.name} and dealt ${playerDamage} damage.`);
+        const newMessage = `You attacked the ${currentEnemy.name} and dealt ${playerDamage} damage.`;
+        updateMessage(newMessage);
         currentEnemy.health -= playerDamage;
         console.log(`player attacked ${currentEnemy.name} with: ${playerDamage}`);
-        setIsPlayerTurn(false);
       }
     }
 
-
     setEnemies(updatedEnemies);
+    setIsPlayerTurn(false);
   }, [
     player,
     enemies,
@@ -490,7 +555,8 @@ const Game = () => {
     if (isDodge) {
       // Player dodges the attack
       setIsPlayerTurn(true);
-      setMessage(`You dodged the ${currentEnemy.name}'s attack!`);
+      const newMessage = `You dodged the ${currentEnemy.name}'s attack!`;
+      updateMessage(newMessage);
       playerImageElement.classList.add("player-dodged-animation");
       enemyImageElement.classList.add("enemy-attack-animation");
       console.log('player dodged')
@@ -500,23 +566,25 @@ const Game = () => {
       }, 500);
 
     } else {
-      // const damage = currentEnemy.atk; // Access 'atk' property directly
+      const damage = currentEnemy.atk; // Access 'atk' property directly
       // updatedPlayer.health -= damage;
 
       if (updatedPlayer.health <= 0) {
         // Player defeated
-        setMessage(`You were defeated by the ${currentEnemy.name}. Game Over!`);
+        const newMessage = `You were defeated by the ${currentEnemy.name}. Game Over!`;
+        updateMessage(newMessage);
         console.log('game over')
         updatedPlayer.health = 0;
         setGameOver(true);
       } else {
         // Player still alive
-        setMessage(
-          `The ${currentEnemy.name} attacked! You took ${currentEnemy.atk} damage.`
-        );
+        const newMessage =
+          `The ${currentEnemy.name} attacked! You took ${damage} damage.`
+          ;
+        updateMessage(newMessage);
         updatedPlayer.health -= currentEnemy.atk;
 
-        console.log(`${currentEnemy.name} attacked, player took damage: ${currentEnemy.atk} `)
+        console.log(`${currentEnemy.name} attacked, player took damage: ${damage} `)
         // Took Damage animation
 
         playerImageElement.classList.add("player-damage-animation");
@@ -528,7 +596,8 @@ const Game = () => {
         }, 500);
         if (updatedPlayer.health <= 0) {
           // Player defeated
-          setMessage(`You were defeated by the ${currentEnemy.name}. Game Over!`);
+          const newMessage = `You were defeated by the ${currentEnemy.name}. Game Over!`;
+          updateMessage(newMessage);
           console.log('game over')
           updatedPlayer.health = 0;
           setGameOver(true);
@@ -592,14 +661,14 @@ const Game = () => {
             mana: prevPlayer.maxMana + 5,
             attack: prevPlayer.attack + 2,
           }));
-          setMessage(
-            `Congratulations! You leveled up to Level ${player.level + 1}!`
-          );
+          const newMessage =
+            `Congratulations! You leveled up to Level ${player.level + 1}!`;
+          updateMessage(newMessage);
           console.log('lvl up - magic')
         } else {
-          setMessage(
-            `You defeated the ${currentEnemy.name} and gained ${xpGained} XP.`
-          );
+          const newMessage =
+            `You defeated the ${currentEnemy.name} and gained ${xpGained} XP.`;
+          updateMessage(newMessage);
           console.log(`${currentEnemy.name} defeated by magic: ${xpGained}`)
           setIsPlayerTurn(false);
         }
@@ -614,19 +683,23 @@ const Game = () => {
         const nextEnemy = getRandomEnemy();
         updatedEnemies[nextEnemyIndex] = nextEnemy;
         setTimeout(() => {
-          setMessage(`A new enemy came up! Prepare to fight!`);
+          const newMessage = `A new enemy came up! Prepare to fight!`;
+          updateMessage(newMessage);
         }, 500); // Delay of 2 seconds before showing the next enemy arrival message
         console.log(`new enemy: ${currentEnemy.name}`)
       } else {
         // Enemy still alive
-        setMessage(
+        const newMessage =
           `You used a magic attack and dealt ${magicDamage} damage to the ${currentEnemy.name}.`
-        );
-        console.log(`player attacked ${currentEnemy.name} with magic: ${magicDamage}`)
+          ;
+        updateMessage(newMessage);
 
+        console.log(`player attacked ${currentEnemy.name} with magic: ${magicDamage}`)
       }
 
       setIsMagicAttack(false);
+      setEnemies(updatedEnemies);
+      setIsPlayerTurn(false);
     }
   }, [
     player,
@@ -699,12 +772,13 @@ const Game = () => {
       setCurrentEnemyIndex(0);
       setIsPlayerTurn(true);
       setGameOver(false);
-      setMessage("Welcome Back to Life noble warrior!");
+      const newMessage = "Welcome Back to Life noble warrior!";
+      updateMessage(newMessage);
     }
   }, [gameOver, initialPlayerState]);
 
   return (
-    <>
+
       <StyledHome>
         <Console>
           <div className="frame">
@@ -741,7 +815,7 @@ const Game = () => {
                 />
               </div>
 
-              <p className="message">{message}</p>
+              {/* <p className="message">{message}</p> */}
             </Screen>
           </div>
           <div className="organizador">
@@ -766,11 +840,16 @@ const Game = () => {
             <StartButton onClick={handleRestart} disabled={!gameOver} />
           </div>
         </Console>
-        <div className="equipment-hud">
-          
-        </div>
+        <ConsoleLog>
+          <p>⚔️ Battle Log ⚔️</p>
+          <ul ref={ulRef}>
+            {messageHistory.map((msg, index) => (
+              <li key={index} style={{ color: getMessageColor(msg) }}>{msg}</li>
+            ))}
+          </ul>
+        </ConsoleLog>
       </StyledHome>
-    </>
+
   );
 };
 

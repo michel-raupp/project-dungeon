@@ -1,6 +1,8 @@
 import { createGlobalStyle } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
+
+
     /* http://meyerweb.com/eric/tools/css/reset/ 
     v2.0 | 20110126
     License: none (public domain)
@@ -19,6 +21,7 @@ const GlobalStyle = createGlobalStyle`
     figure, figcaption, footer, header, hgroup, 
     menu, nav, output, ruby, section, summary,
     time, mark, audio, video {
+        
         margin: 0;
         padding: 0;
         border: 0;
@@ -31,10 +34,51 @@ const GlobalStyle = createGlobalStyle`
     footer, header, hgroup, menu, nav, section {
         display: block;
     }
+
+    *{
+        ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+        }
+        ::-webkit-scrollbar-button {
+        width: 0px;
+        height: 0px;
+        }
+        ::-webkit-scrollbar-thumb {
+        background: #a54371;
+        border: 0px none #ffffff;
+        border-radius: 50px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+        background: #ffffff;
+        }
+        ::-webkit-scrollbar-thumb:active {
+        background: #a54371;
+        }
+        ::-webkit-scrollbar-track {
+        background: #e2f3e4;
+        border: 0px none #ffffff;
+        border-radius: 50px;
+        }
+        ::-webkit-scrollbar-track:hover {
+        background: #555568;
+        }
+        ::-webkit-scrollbar-track:active {
+        background: #e2f3e4;
+        }
+        ::-webkit-scrollbar-corner {
+        background: transparent;
+        }
+    }
+
     body {
         margin: 0;
         font-family: 'Press Start 2P', cursive;
         line-height: 1;
+
+        
+
+  
     }
     ol, ul {
         list-style: none;
