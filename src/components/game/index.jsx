@@ -11,7 +11,8 @@ import {
   StartButton,
   StyledHome,
 } from "../../styles/styles";
-import BotoesWrapper from "../buttons";
+import BotoesWrapper, { playDodged, playTookDamage } from "../buttons";
+import { playEnemyDamageSFX, playCriticalHit } from '../buttons/index';
 
 const items = [
   {
@@ -393,6 +394,8 @@ const Game = () => {
       const newMessage =
         `Oh no, the enemy dodged your attack!!`
         ;
+
+      
       updateMessage(newMessage);
 
       playerImageElement.classList.add("player-attack-animation");
@@ -410,6 +413,7 @@ const Game = () => {
         playerDamage = Math.floor(updatedPlayer.attack * 2);
         console.log("Critical Hit!");
         const newMessage = `You dealt a critical hit! The enemy took ${playerDamage} damage.`;
+        playCriticalHit();
         updateMessage(newMessage);
       } else {
         // Normal hit: deal the base attack
@@ -533,6 +537,7 @@ const Game = () => {
       } else {
         // Enemy still alive
         const newMessage = `You attacked the ${currentEnemy.name} and dealt ${playerDamage} damage.`;
+        playEnemyDamageSFX();
         updateMessage(newMessage);
         currentEnemy.health -= playerDamage;
         console.log(`player attacked ${currentEnemy.name} with: ${playerDamage}`);
@@ -571,6 +576,7 @@ const Game = () => {
       playerImageElement.classList.add("player-dodged-animation");
       enemyImageElement.classList.add("enemy-attack-animation");
       console.log('player dodged')
+      playDodged();
       setTimeout(() => {
         playerImageElement.classList.remove("player-dodged-animation");
         enemyImageElement.classList.remove("enemy-attack-animation");
@@ -592,6 +598,7 @@ const Game = () => {
         const newMessage =
           `The ${currentEnemy.name} attacked! You took ${damage} damage.`
           ;
+          playTookDamage();
         updateMessage(newMessage);
         updatedPlayer.health -= currentEnemy.atk;
 

@@ -6,7 +6,14 @@ import sound from "../../assets/sound.svg";
 import help from "../../assets/help.svg";
 import configs from "../../assets/configs.svg";
 import github from "../../assets/github.svg";
-import Music from "../../assets/music.mp3"
+import Music from "../../assets/sounds/music.mp3";
+import PlayerAttack from '../../assets/sounds/normal-attack.mp3';
+import CriticalHit from '../../assets/sounds/critical-hit.mp3'
+import TookDamage from '../../assets/sounds/took-damage.mp3'
+import Dodged from '../../assets/sounds/dodged.mp3'
+
+// background sound
+// https://www.youtube.com/watch?v=uIfD2BKaD2k
 
 export const Botoes = styled(ContainerDefault)`
   flex-direction: column;
@@ -61,65 +68,91 @@ export const Botao = styled(ContainerDefault)`
     
 `
 
+const playEnemyDamageSFX = () => {
+    const sfx = new Audio(PlayerAttack);
+    sfx.play();
+    sfx.volume = 1;
+};
+
+const playCriticalHit = () => {
+    const sfx = new Audio(CriticalHit);
+    sfx.play();
+    sfx.volume = 1;
+};
+
+const playTookDamage = () => {
+    const sfx = new Audio(TookDamage);
+    sfx.play();
+    sfx.volume = 1;
+};
+
+const playDodged = () => {
+    const sfx = new Audio(Dodged);
+    sfx.play();
+    sfx.volume = 1;
+};
+
 const BackgroundMusic = ({ isMuted }) => {
     useEffect(() => {
-      const audio = new Audio(Music);
-      audio.loop = true;
-      audio.volume = isMuted ? 0 : 1;
-  
-      const playMusic = () => {
-        if (isMuted) {
-          audio.volume = 1;
-        }
-        audio.play()
-          .catch(error => {
-            console.log('Failed to play audio:', error);
-          });
-      };
-  
-      document.addEventListener('click', playMusic);
-      return () => {
-        document.removeEventListener('click', playMusic);
-        audio.volume = 0;
-      };
-    }, [isMuted]);
-  
-    return null;
-  };
-  
-  export default function BotoesWrapper() {
-    const [isMuted, setIsMuted] = useState(true);
-  
-    const toggleMusic = () => {
-      setIsMuted(!isMuted);
-    };
-  
-    return (
-      <Botoes>
-        {isMuted && <BackgroundMusic isMuted={isMuted} />}
-          <Botao  onClick={toggleMusic}>
-            <img src={sound} alt='sound' />
-            <p>{isMuted ? 'Mute' : 'Unmute'}</p>
-          </Botao>
+        const audio = new Audio(Music);
+        audio.loop = true;
+        audio.volume = isMuted ? 0 : .3;
 
-        <a href="">
-          <Botao>
-            <img src={help} alt='help' />
-            <p>Help</p>
-          </Botao>
-        </a>
-        <a href="">
-          <Botao>
-            <img src={configs} alt='Configs' />
-            <p>Configs</p>
-          </Botao>
-        </a>
-        <a href="">
-          <Botao>
-            <img src={github} alt='Github' />
-            <p>Github</p>
-          </Botao>
-        </a>
-      </Botoes>
+        const playMusic = () => {
+            if (isMuted) {
+                audio.volume = .3;
+            }
+            audio.play()
+                .catch(error => {
+                    console.log('Failed to play audio:', error);
+                });
+        };
+
+        document.addEventListener('click', playMusic);
+        return () => {
+            document.removeEventListener('click', playMusic);
+            audio.volume = 0;
+        };
+    }, [isMuted]);
+
+    return null;
+};
+
+export default function BotoesWrapper() {
+    const [isMuted, setIsMuted] = useState(true);
+
+    const toggleMusic = () => {
+        setIsMuted(!isMuted);
+    };
+
+    return (
+        <Botoes>
+            {isMuted && <BackgroundMusic isMuted={isMuted} />}
+            <Botao onClick={toggleMusic}>
+                <img src={sound} alt='sound' />
+                <p>{isMuted ? 'Mute' : 'Unmute'}</p>
+            </Botao>
+
+            <a href="">
+                <Botao>
+                    <img src={help} alt='help' />
+                    <p>Help</p>
+                </Botao>
+            </a>
+            <a href="">
+                <Botao>
+                    <img src={configs} alt='Configs' />
+                    <p>Configs</p>
+                </Botao>
+            </a>
+            <a href="">
+                <Botao>
+                    <img src={github} alt='Github' />
+                    <p>Github</p>
+                </Botao>
+            </a>
+        </Botoes>
     );
-  }
+}
+
+export { BackgroundMusic, playEnemyDamageSFX, playCriticalHit, playTookDamage, playDodged };
