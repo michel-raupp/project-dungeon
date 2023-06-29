@@ -234,16 +234,18 @@ export const StyledHome = styled(ContainerDefault)`
     justify-content: space-between;
   }
 
-   @media(max-width: 768px){
+   @media(max-width: 900px){
     gap: 20px;
   } 
-  @media(max-width: 550px){
-    flex-direction: column;
-    padding: 10px 0;
-    gap: 60px;
+  @media(max-width: 640px){
+    flex-direction: column-reverse;
+    padding: 100px 0;
+    height: fit-content;
+    gap:0;
     justify-content: flex-start;
-    height: auto;
+    
   } 
+
 `;
 
 export const PlayerImage = styled.img`
@@ -285,7 +287,7 @@ export const Console = styled(ContainerDefault)`
   scale: 1.4;  
   background: ${Padrao.colors.white};
   height: fit-content;
-  margin-left: 50px;
+  /* margin-left: 50px; */
   padding: 20px 15px 40px 15px;
   border-radius: 10px 10px 50px 10px;
   gap: 20px;
@@ -344,9 +346,14 @@ export const Console = styled(ContainerDefault)`
     line-height: 1.4;
   }
 
-  @media(max-width: 768px){
+  @media(max-width: 900px){
     scale: 1;
     margin: 0;
+  }
+  @media(max-width: 640px){
+    transform: rotate(90deg);
+    margin-top: -100px;
+    scale: 0.8;
   }
 `;
 
@@ -414,8 +421,6 @@ export const ConsoleLog = styled(ContainerDefault)`
     font-size: 12px;
   }
   ul{
-
-    border-radius: 8px;
     padding: 10px;
     overflow-y: hidden;
     width: 300px;
@@ -425,28 +430,32 @@ export const ConsoleLog = styled(ContainerDefault)`
     gap: 10px;
   }
   li{
+    border-radius: 4px;
     border: 1px solid ${Padrao.colors.white};
     padding: 10px;
     font-size: 8px;
     line-height: 1.2;
   }
 
-  @media(max-width: 768px){
+  @media(max-width: 900px){
     height: 380px;
     ul{
       width: 200px;
     }
   }
 
-  @media(max-width: 550px){
+  @media(max-width: 640px){
     ul{
       padding: 0;
-      width: 270px;
+      width: 240px;
     }
     li{
       line-height: 1.4;
       font-size: 7px;
     }
+    height: 280px;
+    transform: rotate(90deg);
+     margin-top: -60px;
   }
   
 `

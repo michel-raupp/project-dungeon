@@ -1,14 +1,17 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import {
+  Botoes,
   Button,
   Console,
   ConsoleLog,
+  ContainerDefault,
   EnemyImage,
   PlayerImage,
   Screen,
   StartButton,
   StyledHome,
 } from "../../styles/styles";
+import BotoesWrapper from "../buttons";
 
 const items = [
   {
@@ -103,7 +106,7 @@ const items = [
   }
 ];
 
-// Function to check if a random event occurs and return the found item
+
 
 
 const getRandomEnemy = () => {
@@ -175,8 +178,8 @@ const getRandomEnemy = () => {
   };
 };
 
-
 const Game = () => {
+
   const initialPlayerState = useMemo(
     () => ({
       name: "Player",
@@ -219,6 +222,14 @@ const Game = () => {
       }
     }
   }, [messageHistory]);
+
+  const targetRef = useRef(null);
+
+  useEffect(() => {
+    if (targetRef.current) {
+      targetRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, []);
 
   const getMessageColor = (message) => {
     if (message.includes('Congratulations')) {
@@ -778,8 +789,12 @@ const Game = () => {
   }, [gameOver, initialPlayerState]);
 
   return (
-
       <StyledHome>
+        <ContainerDefault ref={targetRef}>
+          <BotoesWrapper>
+            
+          </BotoesWrapper>
+        </ContainerDefault>
         <Console>
           <div className="frame">
             <Screen>
@@ -814,8 +829,6 @@ const Game = () => {
                   alt="player"
                 />
               </div>
-
-              {/* <p className="message">{message}</p> */}
             </Screen>
           </div>
           <div className="organizador">
@@ -848,6 +861,7 @@ const Game = () => {
             ))}
           </ul>
         </ConsoleLog>
+        
       </StyledHome>
 
   );

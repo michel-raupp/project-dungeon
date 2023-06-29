@@ -1,4 +1,5 @@
 import { createGlobalStyle } from "styled-components";
+import { Padrao } from "./styles";
 
 const GlobalStyle = createGlobalStyle`
 
@@ -21,7 +22,7 @@ const GlobalStyle = createGlobalStyle`
     figure, figcaption, footer, header, hgroup, 
     menu, nav, output, ruby, section, summary,
     time, mark, audio, video {
-        
+        text-decoration: none;
         margin: 0;
         padding: 0;
         border: 0;
@@ -75,7 +76,7 @@ const GlobalStyle = createGlobalStyle`
         margin: 0;
         font-family: 'Press Start 2P', cursive;
         line-height: 1;
-
+        background: ${Padrao.colors.black};
         
 
   
