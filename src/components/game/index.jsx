@@ -11,7 +11,7 @@ import {
   StartButton,
   StyledHome,
 } from "../../styles/styles";
-import BotoesWrapper, { playDodged, playTookDamage } from "../buttons";
+import BotoesWrapper, { playDefeated, playMissed, playReward, playTookDamage } from "../buttons";
 import { playEnemyDamageSFX, playCriticalHit } from '../buttons/index';
 
 const items = [
@@ -188,7 +188,7 @@ const Game = () => {
       health: 40,
       maxMana: 30,
       mana: 30,
-      attack: 5,
+      attack: 50,
       swordDamage: 0,
       shieldHealth: 0,
       xp: 0,
@@ -351,7 +351,7 @@ const Game = () => {
 
             const newMessage = `You equipped the (${foundItem.name}) (${foundItem.attributes.healthBonus} HP)! Your health has increased to ${updatedPlayer.maxHealth}.`;
             updateMessage(newMessage);
-            
+
             setTimeout(() => {
               console.log(`You found a better shield (${foundItem.name}) (${foundItem.attributes.healthBonus} HP)! Your health has increased to ${updatedPlayer.maxHealth}.`);
             }, 500);
@@ -386,7 +386,7 @@ const Game = () => {
     const isCriticalHit = criticalHitChance < 0.1; // 10% critical hit chance
 
     const missChance = Math.random(); // Generate a random number between 0 and 1 for critical hit chance
-    const isMissed = missChance < 0.1; // Assuming a 20% critical hit chance
+    const isMissed = missChance < 0.1; // Assuming a 10% miss hit chance
 
     if (isMissed) {
 
@@ -395,7 +395,7 @@ const Game = () => {
         `Oh no, the enemy dodged your attack!!`
         ;
 
-      
+      playMissed();
       updateMessage(newMessage);
 
       playerImageElement.classList.add("player-attack-animation");
@@ -436,8 +436,8 @@ const Game = () => {
 
       if (currentEnemy.health - playerDamage <= 0) {
         // Enemy defeated
-        
-        
+
+
 
         playerDamage = currentEnemy.health; // Limit player damage to the enemy's remaining health
         currentEnemy.health = 0; // Set enemy health to 0
@@ -453,6 +453,7 @@ const Game = () => {
           attack: Math.floor(Math.random() * 2) + 1
         };
         const newMessage = `You defeated the ${currentEnemy.name} and gained ${xpGained} XP.`;
+        playDefeated();
         updateMessage(newMessage);
         // Check if player levels up
         while (updatedPlayer.xp >= updatedPlayer.xpToLevelUp) {
@@ -478,11 +479,12 @@ const Game = () => {
           console.log("");
         }
 
-        
+
         // Generate a random event to check if an item is found
         const foundItem = checkRandomEvent();
 
         if (foundItem) {
+          playReward();
           // Apply the item's attributes to the player based on its type
           if (foundItem.type === "Consumable") {
             // It's a consumable item (e.g., potion)
@@ -520,18 +522,19 @@ const Game = () => {
         }
 
         setPlayer(updatedPlayer);
+        setTimeout(() => {
+          // Continue to the next enemy
+          const nextEnemyIndex = currentEnemyIndex + 1;
+          setCurrentEnemyIndex(nextEnemyIndex);
 
-        // Continue to the next enemy
-        const nextEnemyIndex = currentEnemyIndex + 1;
-        setCurrentEnemyIndex(nextEnemyIndex);
-
-        // Reset the health of the next enemy
-        const nextEnemy = getRandomEnemy();
-        updatedEnemies[nextEnemyIndex] = nextEnemy;
+          // Reset the health of the next enemy
+          const nextEnemy = getRandomEnemy();
+          updatedEnemies[nextEnemyIndex] = nextEnemy;
+        }, 1500);
         setTimeout(() => {
           const newMessage = `A new enemy came up! Prepare to fight!`;
           updateMessage(newMessage);
-        }, 500); // Delay of 2 seconds before showing the next enemy arrival message
+        }, 1650); // Delay of 1.65 seconds before showing the next enemy arrival message
         console.log(`new enemy: ${currentEnemy.name}`);
         console.log(`player health: ${player.health}`);
       } else {
@@ -576,7 +579,7 @@ const Game = () => {
       playerImageElement.classList.add("player-dodged-animation");
       enemyImageElement.classList.add("enemy-attack-animation");
       console.log('player dodged')
-      playDodged();
+      playMissed();
       setTimeout(() => {
         playerImageElement.classList.remove("player-dodged-animation");
         enemyImageElement.classList.remove("enemy-attack-animation");
@@ -598,7 +601,7 @@ const Game = () => {
         const newMessage =
           `The ${currentEnemy.name} attacked! You took ${damage} damage.`
           ;
-          playTookDamage();
+        playTookDamage();
         updateMessage(newMessage);
         updatedPlayer.health -= currentEnemy.atk;
 
@@ -647,14 +650,15 @@ const Game = () => {
       setTimeout(() => {
         enemyImageElement.classList.add("enemy-damage-animation");
         playerImageElement.classList.remove("magic-attack-animation");
-
       }, 500);
+
       const updatedEnemies = [...enemies];
       const currentEnemy = updatedEnemies[currentEnemyIndex];
 
       const magicDamage = player.attack * 3; // Calculate the magic damage
-      currentEnemy.health -= magicDamage; // Subtract the magic damage from enemy's health
-
+      setTimeout(() => {
+        currentEnemy.health -= magicDamage; // Subtract the magic damage from enemy's health
+      }, 500);
       if (currentEnemy.health <= 0) {
         // Enemy defeated
         currentEnemy.health = 0; // Ensure health doesn't go below 0
@@ -686,20 +690,27 @@ const Game = () => {
         } else {
           const newMessage =
             `You defeated the ${currentEnemy.name} and gained ${xpGained} XP.`;
+
           updateMessage(newMessage);
           console.log(`${currentEnemy.name} defeated by magic: ${xpGained}`)
           setIsPlayerTurn(false);
+
         }
 
         setEnemies(updatedEnemies);
+        setTimeout(() => {
+          // Continue to the next enemy
+          const nextEnemyIndex = currentEnemyIndex + 1;
+          setCurrentEnemyIndex(nextEnemyIndex);
 
-        // Continue to the next enemy
-        const nextEnemyIndex = currentEnemyIndex + 1;
-        setCurrentEnemyIndex(nextEnemyIndex);
+          // Reset the health of the next enemy
 
-        // Reset the health of the next enemy
-        const nextEnemy = getRandomEnemy();
-        updatedEnemies[nextEnemyIndex] = nextEnemy;
+          const nextEnemy = getRandomEnemy();
+          updatedEnemies[nextEnemyIndex] = nextEnemy;
+        }, 1650);
+        setTimeout(() => {
+          playDefeated();
+        }, 500);
         setTimeout(() => {
           const newMessage = `A new enemy came up! Prepare to fight!`;
           updateMessage(newMessage);
@@ -796,80 +807,80 @@ const Game = () => {
   }, [gameOver, initialPlayerState]);
 
   return (
-      <StyledHome>
-        <ContainerDefault ref={targetRef}>
-          <BotoesWrapper>
-            
-          </BotoesWrapper>
-        </ContainerDefault>
-        <Console>
-          <div className="frame">
-            <Screen>
-              <div className="organizador huds">
-                <div className="enemy-hud">
-                  <p>{enemies[currentEnemyIndex].name}</p>
-                  <p>HP: {enemies[currentEnemyIndex].health}</p>
-                </div>
-                <div className="player-hud">
-                  <p>
-                    HP: {player.health}/{player.maxHealth}
-                  </p>
-                  <p>
-                    MP: {player.mana}/{player.maxMana}
-                  </p>
-                  <p>Atk: {player.attack}</p>
-                  <p>lvl: {player.level}</p>
-                  <p>
-                    xp: {player.xp}/{player.xpToLevelUp}
-                  </p>
-                </div>
+    <StyledHome>
+      <ContainerDefault ref={targetRef}>
+        <BotoesWrapper>
+
+        </BotoesWrapper>
+      </ContainerDefault>
+      <Console>
+        <div className="frame">
+          <Screen>
+            <div className="organizador huds">
+              <div className="enemy-hud">
+                <p>{enemies[currentEnemyIndex].name}</p>
+                <p>HP: {enemies[currentEnemyIndex].health}</p>
               </div>
-              <div className="sprites">
-                <EnemyImage
-                  className="enemy-img"
-                  src={enemies[currentEnemyIndex].img}
-                  alt={enemies[currentEnemyIndex].name}
-                />
-                <PlayerImage
-                  className="player-img"
-                  src={player.img}
-                  alt="player"
-                />
+              <div className="player-hud">
+                <p>
+                  HP: {player.health}/{player.maxHealth}
+                </p>
+                <p>
+                  MP: {player.mana}/{player.maxMana}
+                </p>
+                <p>Atk: {player.attack}</p>
+                <p>lvl: {player.level}</p>
+                <p>
+                  xp: {player.xp}/{player.xpToLevelUp}
+                </p>
               </div>
-            </Screen>
-          </div>
-          <div className="organizador">
-            <p className="arrow-keys">+</p>
-            <div className="botoes">
-              <Button
-                onClick={handleNextTurn}
-                disabled={!isPlayerTurn || gameOver}
-              >
-                A
-              </Button>
-              <Button
-                onClick={handleMagicAttack}
-                disabled={!isPlayerTurn || gameOver || player.mana < 20}
-              >
-                B
-              </Button>
             </div>
+            <div className="sprites">
+              <EnemyImage
+                className="enemy-img"
+                src={enemies[currentEnemyIndex].img}
+                alt={enemies[currentEnemyIndex].name}
+              />
+              <PlayerImage
+                className="player-img"
+                src={player.img}
+                alt="player"
+              />
+            </div>
+          </Screen>
+        </div>
+        <div className="organizador">
+          <p className="arrow-keys">+</p>
+          <div className="botoes">
+            <Button
+              onClick={handleNextTurn}
+              disabled={!isPlayerTurn || gameOver}
+            >
+              A
+            </Button>
+            <Button
+              onClick={handleMagicAttack}
+              disabled={!isPlayerTurn || gameOver || player.mana < 20}
+            >
+              B
+            </Button>
           </div>
-          <div className="organizador start">
-            <StartButton onClick={handleRestart} disabled={!gameOver} />
-            <StartButton onClick={handleRestart} disabled={!gameOver} />
-          </div>
-        </Console>
-        <ConsoleLog>
-          <p>⚔️ Battle Log ⚔️</p>
-          <ul ref={ulRef}>
-            {messageHistory.map((msg, index) => (
-              <li key={index} style={{ color: getMessageColor(msg) }}>{msg}</li>
-            ))}
-          </ul>
-        </ConsoleLog>
-        
-      </StyledHome>
+        </div>
+        <div className="organizador start">
+          <StartButton onClick={handleRestart} disabled={!gameOver} />
+          <StartButton onClick={handleRestart} disabled={!gameOver} />
+        </div>
+      </Console>
+      <ConsoleLog>
+        <p>⚔️ Battle Log ⚔️</p>
+        <ul ref={ulRef}>
+          {messageHistory.map((msg, index) => (
+            <li key={index} style={{ color: getMessageColor(msg) }}>{msg}</li>
+          ))}
+        </ul>
+      </ConsoleLog>
+
+    </StyledHome>
 
   );
 };

@@ -7,10 +7,12 @@ import help from "../../assets/help.svg";
 import configs from "../../assets/configs.svg";
 import github from "../../assets/github.svg";
 import Music from "../../assets/sounds/music.mp3";
-import PlayerAttack from '../../assets/sounds/normal-attack.mp3';
+import PlayerAttack from '../../assets/sounds/normal-attack2.mp3';
 import CriticalHit from '../../assets/sounds/critical-hit.mp3'
 import TookDamage from '../../assets/sounds/took-damage.mp3'
-import Dodged from '../../assets/sounds/dodged.mp3'
+import Reward from '../../assets/sounds/reward.mp3'
+import Missed from '../../assets/sounds/missed.mp3'
+import Defeated from '../../assets/sounds/enemy-defeated.mp3'
 
 // background sound
 // https://www.youtube.com/watch?v=uIfD2BKaD2k
@@ -35,7 +37,7 @@ export const Botao = styled(ContainerDefault)`
     flex-direction: column;
     width: 120px;
     height: 120px;
-    background: #D9D9D9;
+    background: ${Padrao.colors.white};
     border-radius: 16px;
     gap: 10px;
     box-shadow: 8px 8px 0px 0px ${Padrao.colors.grey};
@@ -86,8 +88,25 @@ const playTookDamage = () => {
     sfx.volume = 1;
 };
 
-const playDodged = () => {
-    const sfx = new Audio(Dodged);
+const playReward = () => {
+    const sfx = new Audio(Reward);
+
+    setTimeout(() => {
+        sfx.play();
+    }, 500);
+    sfx.volume = 1;
+};
+
+const playMissed = () => {
+    const sfx = new Audio(Missed);
+    sfx.currentTime = 0.4;
+    sfx.play();
+    sfx.volume = 1;
+};
+
+const playDefeated = () => {
+    const sfx = new Audio(Defeated);
+    sfx.currentTime = 0.4;
     sfx.play();
     sfx.volume = 1;
 };
@@ -155,4 +174,4 @@ export default function BotoesWrapper() {
     );
 }
 
-export { BackgroundMusic, playEnemyDamageSFX, playCriticalHit, playTookDamage, playDodged };
+export { BackgroundMusic, playEnemyDamageSFX, playCriticalHit, playTookDamage, playReward, playMissed, playDefeated };
