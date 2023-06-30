@@ -90,7 +90,7 @@ const playTookDamage = () => {
 
 const playReward = () => {
     const sfx = new Audio(Reward);
-
+    sfx.currentTime = 0.4;
     setTimeout(() => {
         sfx.play();
     }, 500);
@@ -152,19 +152,19 @@ export default function BotoesWrapper() {
                 <p>{isMuted ? 'Mute' : 'Unmute'}</p>
             </Botao>
 
-            <a href="">
+            <a href="/">
                 <Botao>
                     <img src={help} alt='help' />
                     <p>Help</p>
                 </Botao>
             </a>
-            <a href="">
+            <a href="/">
                 <Botao>
                     <img src={configs} alt='Configs' />
                     <p>Configs</p>
                 </Botao>
             </a>
-            <a href="">
+            <a href="/">
                 <Botao>
                     <img src={github} alt='Github' />
                     <p>Github</p>

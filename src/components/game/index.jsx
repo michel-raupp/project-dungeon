@@ -188,7 +188,7 @@ const Game = () => {
       health: 40,
       maxMana: 30,
       mana: 30,
-      attack: 50,
+      attack: 5,
       swordDamage: 0,
       shieldHealth: 0,
       xp: 0,
@@ -204,6 +204,8 @@ const Game = () => {
   const [isPlayerTurn, setIsPlayerTurn] = useState(true);
   const [message, setMessage] = useState("");
   const [messageHistory, setMessageHistory] = useState([]);
+  const [playerDamage, setPlayerDamage] = useState("playera");
+  const [enemyDamage, setEnemyDamage] = useState("enemya");
   const [gameOver, setGameOver] = useState(false);
   const [isMagicAttack, setIsMagicAttack] = useState(false);
   const [enemies, setEnemies] = useState([getRandomEnemy()]);
@@ -214,6 +216,13 @@ const Game = () => {
   };
 
   const ulRef = useRef(null); // Declare and initialize the ulRef
+
+  useEffect(() => {
+
+    console.log("Player damasdasage:", playerDamage);
+
+  
+  }, [playerDamage]);
 
   useEffect(() => {
     if (ulRef.current) {
@@ -275,7 +284,7 @@ const Game = () => {
       const randomNumber = Math.random();
 
       // Calculate the chance of finding an item (e.g., 20%)
-      const itemChance = .99;
+      const itemChance = .25;
 
       // Check if the random number is less than the item chance
       if (randomNumber < itemChance) {
@@ -395,12 +404,12 @@ const Game = () => {
         `Oh no, the enemy dodged your attack!!`
         ;
 
-      playMissed();
+
       updateMessage(newMessage);
 
       playerImageElement.classList.add("player-attack-animation");
       enemyImageElement.classList.add("enemy-dodged-animation");
-
+      playMissed();
       setTimeout(() => {
         playerImageElement.classList.remove("player-attack-animation");
         enemyImageElement.classList.remove("enemy-dodged-animation");
@@ -413,11 +422,14 @@ const Game = () => {
         playerDamage = Math.floor(updatedPlayer.attack * 2);
         console.log("Critical Hit!");
         const newMessage = `You dealt a critical hit! The enemy took ${playerDamage} damage.`;
+        setPlayerDamage(playerDamage);
+        
         playCriticalHit();
         updateMessage(newMessage);
       } else {
         // Normal hit: deal the base attack
         playerDamage = updatedPlayer.attack;
+        setPlayerDamage(playerDamage);
       }
 
       // Player gets hit by the enemy's attack
@@ -543,6 +555,7 @@ const Game = () => {
         playEnemyDamageSFX();
         updateMessage(newMessage);
         currentEnemy.health -= playerDamage;
+        setPlayerDamage(playerDamage);
         console.log(`player attacked ${currentEnemy.name} with: ${playerDamage}`);
       }
     }
@@ -570,7 +583,7 @@ const Game = () => {
 
     const playerImageElement = document.querySelector(".player-img");
     const enemyImageElement = document.querySelector(".enemy-img");
-
+    const enemyTextDamage = document.querySelector(".enemy-damage");
     if (isDodge) {
       // Player dodges the attack
       setIsPlayerTurn(true);
@@ -578,11 +591,14 @@ const Game = () => {
       updateMessage(newMessage);
       playerImageElement.classList.add("player-dodged-animation");
       enemyImageElement.classList.add("enemy-attack-animation");
+      enemyTextDamage.classList.add(".enemy-attack-text");
+      setEnemyDamage("dodged");
       console.log('player dodged')
       playMissed();
       setTimeout(() => {
         playerImageElement.classList.remove("player-dodged-animation");
         enemyImageElement.classList.remove("enemy-attack-animation");
+        enemyTextDamage.classList.remove(".enemy-attack-text");
       }, 500);
 
     } else {
@@ -602,6 +618,7 @@ const Game = () => {
           `The ${currentEnemy.name} attacked! You took ${damage} damage.`
           ;
         playTookDamage();
+        setEnemyDamage(currentEnemy.atk);
         updateMessage(newMessage);
         updatedPlayer.health -= currentEnemy.atk;
 
@@ -610,7 +627,7 @@ const Game = () => {
 
         playerImageElement.classList.add("player-damage-animation");
         enemyImageElement.classList.add("enemy-attack-animation");
-
+        enemyTextDamage.classList.add(".enemy-attack-text");
         setTimeout(() => {
           playerImageElement.classList.remove("player-damage-animation");
           enemyImageElement.classList.remove("enemy-attack-animation");
@@ -658,73 +675,75 @@ const Game = () => {
       const magicDamage = player.attack * 3; // Calculate the magic damage
       setTimeout(() => {
         currentEnemy.health -= magicDamage; // Subtract the magic damage from enemy's health
-      }, 500);
-      if (currentEnemy.health <= 0) {
-        // Enemy defeated
-        currentEnemy.health = 0; // Ensure health doesn't go below 0
+        if (currentEnemy.health <= 0) {
+          // Enemy defeated
+          currentEnemy.health = 0; // Ensure health doesn't go below 0
 
-        // Increase player XP
-        const xpGained = currentEnemy.xp;
-        setPlayer((prevPlayer) => ({
-          ...prevPlayer,
-          xp: prevPlayer.xp + xpGained,
-        }));
-
-        // Check if player levels up
-        if (player.xp >= player.xpToLevelUp) {
+          // Increase player XP
+          const xpGained = currentEnemy.xp;
           setPlayer((prevPlayer) => ({
             ...prevPlayer,
-            xp: prevPlayer.xp - prevPlayer.xpToLevelUp,
-            level: prevPlayer.level + 1,
-            xpToLevelUp: prevPlayer.xpToLevelUp + 20,
-            maxHealth: prevPlayer.maxHealth + 10,
-            health: prevPlayer.maxHealth + 10,
-            maxMana: prevPlayer.maxMana + 5,
-            mana: prevPlayer.maxMana + 5,
-            attack: prevPlayer.attack + 2,
+            xp: prevPlayer.xp + xpGained,
           }));
-          const newMessage =
-            `Congratulations! You leveled up to Level ${player.level + 1}!`;
-          updateMessage(newMessage);
-          console.log('lvl up - magic')
+
+          // Check if player levels up
+          if (player.xp >= player.xpToLevelUp) {
+            setPlayer((prevPlayer) => ({
+              ...prevPlayer,
+              xp: prevPlayer.xp - prevPlayer.xpToLevelUp,
+              level: prevPlayer.level + 1,
+              xpToLevelUp: prevPlayer.xpToLevelUp + 20,
+              maxHealth: prevPlayer.maxHealth + 10,
+              health: prevPlayer.maxHealth + 10,
+              maxMana: prevPlayer.maxMana + 5,
+              mana: prevPlayer.maxMana + 5,
+              attack: prevPlayer.attack + 2,
+            }));
+            const newMessage =
+              `Congratulations! You leveled up to Level ${player.level + 1}!`;
+            updateMessage(newMessage);
+            console.log('lvl up - magic')
+          } else {
+            const newMessage =
+              `You defeated the ${currentEnemy.name} and gained ${xpGained} XP.`;
+
+            updateMessage(newMessage);
+            console.log(`${currentEnemy.name} defeated by magic: ${xpGained}`)
+            setIsPlayerTurn(false);
+
+          }
+
+          setEnemies(updatedEnemies);
+          setTimeout(() => {
+            // Continue to the next enemy
+            const nextEnemyIndex = currentEnemyIndex + 1;
+            setCurrentEnemyIndex(nextEnemyIndex);
+
+            // Reset the health of the next enemy
+
+            const nextEnemy = getRandomEnemy();
+            updatedEnemies[nextEnemyIndex] = nextEnemy;
+          }, 1650);
+          setTimeout(() => {
+            setPlayerDamage(magicDamage);
+            playDefeated();
+          }, 500);
+          setTimeout(() => {
+            const newMessage = `A new enemy came up! Prepare to fight!`;
+            updateMessage(newMessage);
+          }, 500); // Delay of 2 seconds before showing the next enemy arrival message
+          console.log(`new enemy: ${currentEnemy.name}`)
         } else {
+          // Enemy still alive
           const newMessage =
-            `You defeated the ${currentEnemy.name} and gained ${xpGained} XP.`;
-
+            `You used a magic attack and dealt ${magicDamage} damage to the ${currentEnemy.name}.`
+            ;
           updateMessage(newMessage);
-          console.log(`${currentEnemy.name} defeated by magic: ${xpGained}`)
-          setIsPlayerTurn(false);
-
+          setPlayerDamage(magicDamage);
+          console.log(`player attacked ${currentEnemy.name} with magic: ${magicDamage}`)
         }
+      }, 500);
 
-        setEnemies(updatedEnemies);
-        setTimeout(() => {
-          // Continue to the next enemy
-          const nextEnemyIndex = currentEnemyIndex + 1;
-          setCurrentEnemyIndex(nextEnemyIndex);
-
-          // Reset the health of the next enemy
-
-          const nextEnemy = getRandomEnemy();
-          updatedEnemies[nextEnemyIndex] = nextEnemy;
-        }, 1650);
-        setTimeout(() => {
-          playDefeated();
-        }, 500);
-        setTimeout(() => {
-          const newMessage = `A new enemy came up! Prepare to fight!`;
-          updateMessage(newMessage);
-        }, 500); // Delay of 2 seconds before showing the next enemy arrival message
-        console.log(`new enemy: ${currentEnemy.name}`)
-      } else {
-        // Enemy still alive
-        const newMessage =
-          `You used a magic attack and dealt ${magicDamage} damage to the ${currentEnemy.name}.`
-          ;
-        updateMessage(newMessage);
-
-        console.log(`player attacked ${currentEnemy.name} with magic: ${magicDamage}`)
-      }
 
       setIsMagicAttack(false);
       setEnemies(updatedEnemies);
@@ -836,11 +855,17 @@ const Game = () => {
               </div>
             </div>
             <div className="sprites">
+            <p className="player-damage">
+                   {playerDamage}
+                </p>
               <EnemyImage
                 className="enemy-img"
                 src={enemies[currentEnemyIndex].img}
                 alt={enemies[currentEnemyIndex].name}
               />
+              <p className="enemy-damage">
+                   {enemyDamage}
+                </p>
               <PlayerImage
                 className="player-img"
                 src={player.img}

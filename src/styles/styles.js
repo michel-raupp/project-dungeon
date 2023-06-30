@@ -197,6 +197,26 @@ const enemyDodged = keyframes`
   }
 `;
 
+//enemy dodged
+const damageText = keyframes`
+  0% {
+    color: red;
+    transform: translateY(0);
+    opacity: 0;
+  }
+
+  20%{
+    transform: translateY(5px);
+    opacity: 1;
+    color: blue;
+  }
+
+  100% {
+    transform: translateY(10px);
+    color: blueviolet;
+  }
+`;
+
 export const Padrao = {
   colors: {
     primary: "#94ff29",
@@ -336,6 +356,7 @@ export const Console = styled(ContainerDefault)`
   .player-hud {
     display: flex;
     flex-direction: column;
+    gap: 2px;
   }
   .player-hud p {
     width: 100%;
@@ -397,6 +418,26 @@ export const Screen = styled(ContainerDefault)`
   padding: 10px;
   border: 5px solid ${Padrao.colors.black};
   flex-direction: column;
+
+  .enemy-damage{
+    position: absolute;
+    bottom: 40%;
+    right: 22%;
+    z-index: 2;
+    &.enemy-attack-text {
+      animation: ${damageText} 0.5s;
+    }
+  }
+
+  .player-damage{
+    z-index: 2;
+    position: absolute;
+    bottom: 40%;
+    left: 30%;
+    &.player-attack-text {
+      animation: ${damageText} 0.5s;
+    }
+  }
 `;
 
 export const ActionWindow = styled(ContainerDefault)`
