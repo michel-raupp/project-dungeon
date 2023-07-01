@@ -188,7 +188,7 @@ const Game = () => {
       health: 40,
       maxMana: 30,
       mana: 30,
-      attack: 10,
+      attack: 4,
       swordDamage: 0,
       shieldHealth: 0,
       xp: 0,
