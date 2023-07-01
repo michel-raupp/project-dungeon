@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import {
-  Botoes,
   Button,
   Console,
   ConsoleLog,
@@ -15,7 +14,7 @@ import BotoesWrapper, { playDefeated, playMagicAttack, playMissed, playReward, p
 import { playEnemyDamageSFX, playCriticalHit } from '../buttons/index';
 import { getRandomEnemy } from "../data/enemies";
 import {items} from "../data/items";
-
+import { useMessage, getMessageColor } from './message';
 
 const Game = () => {
 
@@ -40,30 +39,13 @@ const Game = () => {
   const [player, setPlayer] = useState(initialPlayerState);
   const [currentEnemyIndex, setCurrentEnemyIndex] = useState(0);
   const [isPlayerTurn, setIsPlayerTurn] = useState(true);
-  const [message, setMessage] = useState("");
-  const [messageHistory, setMessageHistory] = useState([]);
+  const { message, messageHistory, updateMessage, ulRef } = useMessage();
   const [playerDamage, setPlayerDamage] = useState("");
   const [enemyDamage, setEnemyDamage] = useState("");
   const [gameOver, setGameOver] = useState(false);
   const [isMagicAttack, setIsMagicAttack] = useState(false);
   const [enemies, setEnemies] = useState([getRandomEnemy()]);
 
-
-  const updateMessage = (newMessage) => {
-    setMessage(newMessage);
-    setMessageHistory((prevHistory) => [...prevHistory, newMessage]);
-  };
-
-  const ulRef = useRef(null); // Declare and initialize the ulRef
-
-  useEffect(() => {
-    if (ulRef.current) {
-      const newestLi = ulRef.current.lastChild;
-      if (newestLi) {
-        newestLi.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-  }, [messageHistory]);
 
   const targetRef = useRef(null);
 
@@ -72,38 +54,6 @@ const Game = () => {
       targetRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, []);
-
-  const getMessageColor = (message) => {
-    if (message.includes('Congratulations')) {
-      return 'lime'; // Set the color to green for specific message
-    }
-    if (message.includes('You defeated')) {
-      return 'orangeRed'; // Set the color to red for specific message
-    }
-    if (message.includes('magic')) {
-      return 'cyan'; // Set the color to red for specific message
-    }
-    if (message.includes('found')) {
-      return 'gold'; // Set the color to red for specific message
-    }
-    if (message.includes('You dodged')) {
-      return 'lightSkyBlue'; // Set the color to red for specific message
-    }
-    if (message.includes('critical')) {
-      return 'Magenta'; // Set the color to red for specific message
-    }
-    if (message.includes('the enemy dodged')) {
-      return 'indianRed'; // Set the color to red for specific message
-    }
-    if (message.includes('equipped')) {
-      return 'lawnGreen'; // Set the color to red for specific message
-    }
-    if (message.includes('restore')) {
-      return 'lawnGreen'; // Set the color to red for specific message
-    }
-    // Set default color for other messages
-    return 'white';
-  };
 
   const playerAttack = useCallback(() => {
     if (!isPlayerTurn || gameOver) {
@@ -408,6 +358,7 @@ const Game = () => {
     currentEnemyIndex,
     isPlayerTurn,
     gameOver,
+    updateMessage
   ]);
 
   const enemyAttack = useCallback(() => {
@@ -484,7 +435,7 @@ const Game = () => {
       }
     }
 
-  }, [isPlayerTurn, gameOver, player, enemies, currentEnemyIndex]);
+  }, [isPlayerTurn, gameOver, player, enemies, currentEnemyIndex, updateMessage]);
 
   const handleMagicAttack = useCallback(() => {
     setIsMagicAttack(true);
@@ -614,7 +565,7 @@ const Game = () => {
     setEnemies,
     setCurrentEnemyIndex,
     setIsPlayerTurn,
-    setMessage,
+    updateMessage
   ]);
 
   const handleNextTurn = useCallback(() => {
@@ -680,7 +631,7 @@ const Game = () => {
       const newMessage = "Welcome Back to Life noble warrior!";
       updateMessage(newMessage);
     }
-  }, [gameOver, initialPlayerState]);
+  }, [gameOver, initialPlayerState, updateMessage]);
 
   return (
     <StyledHome>
