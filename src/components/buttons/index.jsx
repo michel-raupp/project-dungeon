@@ -73,19 +73,19 @@ export const Botao = styled(ContainerDefault)`
 const playEnemyDamageSFX = () => {
     const sfx = new Audio(PlayerAttack);
     sfx.play();
-    sfx.volume = 1;
+    sfx.volume = .5;
 };
 
 const playCriticalHit = () => {
     const sfx = new Audio(CriticalHit);
     sfx.play();
-    sfx.volume = 1;
+    sfx.volume = .5;
 };
 
 const playTookDamage = () => {
     const sfx = new Audio(TookDamage);
     sfx.play();
-    sfx.volume = 1;
+    sfx.volume = .5;
 };
 
 const playReward = () => {
@@ -94,21 +94,21 @@ const playReward = () => {
     setTimeout(() => {
         sfx.play();
     }, 500);
-    sfx.volume = 1;
+    sfx.volume = .5;
 };
 
 const playMissed = () => {
     const sfx = new Audio(Missed);
     sfx.currentTime = 0.4;
     sfx.play();
-    sfx.volume = 1;
+    sfx.volume = .5;
 };
 
 const playDefeated = () => {
     const sfx = new Audio(Defeated);
     sfx.currentTime = 0.4;
     sfx.play();
-    sfx.volume = 1;
+    sfx.volume = .5;
 };
 
 const BackgroundMusic = ({ isMuted }) => {
@@ -119,7 +119,7 @@ const BackgroundMusic = ({ isMuted }) => {
 
         const playMusic = () => {
             if (isMuted) {
-                audio.volume = .3;
+                audio.volume = .1;
             }
             audio.play()
                 .catch(error => {

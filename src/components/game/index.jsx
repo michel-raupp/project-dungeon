@@ -188,7 +188,7 @@ const Game = () => {
       health: 40,
       maxMana: 30,
       mana: 30,
-      attack: 5,
+      attack: 10,
       swordDamage: 0,
       shieldHealth: 0,
       xp: 0,
@@ -204,11 +204,12 @@ const Game = () => {
   const [isPlayerTurn, setIsPlayerTurn] = useState(true);
   const [message, setMessage] = useState("");
   const [messageHistory, setMessageHistory] = useState([]);
-  const [playerDamage, setPlayerDamage] = useState("playera");
-  const [enemyDamage, setEnemyDamage] = useState("enemya");
+  const [playerDamage, setPlayerDamage] = useState("");
+  const [enemyDamage, setEnemyDamage] = useState("");
   const [gameOver, setGameOver] = useState(false);
   const [isMagicAttack, setIsMagicAttack] = useState(false);
   const [enemies, setEnemies] = useState([getRandomEnemy()]);
+
 
   const updateMessage = (newMessage) => {
     setMessage(newMessage);
@@ -216,13 +217,6 @@ const Game = () => {
   };
 
   const ulRef = useRef(null); // Declare and initialize the ulRef
-
-  useEffect(() => {
-
-    console.log("Player damasdasage:", playerDamage);
-
-  
-  }, [playerDamage]);
 
   useEffect(() => {
     if (ulRef.current) {
@@ -406,13 +400,15 @@ const Game = () => {
 
 
       updateMessage(newMessage);
-
+      enemyImageElement.classList.remove("enemy-appeared-animation");
       playerImageElement.classList.add("player-attack-animation");
       enemyImageElement.classList.add("enemy-dodged-animation");
+
       playMissed();
       setTimeout(() => {
-        playerImageElement.classList.remove("player-attack-animation");
         enemyImageElement.classList.remove("enemy-dodged-animation");
+        playerImageElement.classList.remove("player-attack-animation");
+
       }, 500);
       setIsPlayerTurn(false)
     }
@@ -423,7 +419,7 @@ const Game = () => {
         console.log("Critical Hit!");
         const newMessage = `You dealt a critical hit! The enemy took ${playerDamage} damage.`;
         setPlayerDamage(playerDamage);
-        
+
         playCriticalHit();
         updateMessage(newMessage);
       } else {
@@ -437,7 +433,7 @@ const Game = () => {
       // updatedPlayer.health -= currentEnemy.atk;
       // currentEnemy.health -= playerDamage;
       // Attack animation
-
+      enemyImageElement.classList.remove("enemy-appeared-animation");
       playerImageElement.classList.add("player-attack-animation");
       enemyImageElement.classList.add("enemy-damage-animation");
 
@@ -449,7 +445,9 @@ const Game = () => {
       if (currentEnemy.health - playerDamage <= 0) {
         // Enemy defeated
 
-
+        setTimeout(() => {
+          enemyImageElement.classList.add("enemy-defeated-animation");
+        }, 500);
 
         playerDamage = currentEnemy.health; // Limit player damage to the enemy's remaining health
         currentEnemy.health = 0; // Set enemy health to 0
@@ -457,7 +455,7 @@ const Game = () => {
         // Increase player XP
         const xpGained = currentEnemy.xp;
         updatedPlayer.xp += xpGained;
-
+        
         const randomStatsNumber = {
           xpToLevelUp: Math.floor(Math.random() * 2) + 8,
           maxHealth: Math.floor(Math.random() * 15) + 5,
@@ -466,6 +464,7 @@ const Game = () => {
         };
         const newMessage = `You defeated the ${currentEnemy.name} and gained ${xpGained} XP.`;
         playDefeated();
+  
         updateMessage(newMessage);
         // Check if player levels up
         while (updatedPlayer.xp >= updatedPlayer.xpToLevelUp) {
@@ -538,15 +537,18 @@ const Game = () => {
           // Continue to the next enemy
           const nextEnemyIndex = currentEnemyIndex + 1;
           setCurrentEnemyIndex(nextEnemyIndex);
-
+          enemyImageElement.classList.remove("enemy-defeated-animation");
           // Reset the health of the next enemy
           const nextEnemy = getRandomEnemy();
           updatedEnemies[nextEnemyIndex] = nextEnemy;
-        }, 1500);
+          enemyImageElement.classList.add("enemy-appeared-animation");
+        }, 500);
+        
         setTimeout(() => {
+          enemyImageElement.classList.remove("enemy-appeared-animation");
           const newMessage = `A new enemy came up! Prepare to fight!`;
           updateMessage(newMessage);
-        }, 1650); // Delay of 1.65 seconds before showing the next enemy arrival message
+        }, 1000); // Delay of 1.65 seconds before showing the next enemy arrival message
         console.log(`new enemy: ${currentEnemy.name}`);
         console.log(`player health: ${player.health}`);
       } else {
@@ -557,6 +559,7 @@ const Game = () => {
         currentEnemy.health -= playerDamage;
         setPlayerDamage(playerDamage);
         console.log(`player attacked ${currentEnemy.name} with: ${playerDamage}`);
+
       }
     }
 
@@ -579,11 +582,11 @@ const Game = () => {
     const currentEnemy = enemies[currentEnemyIndex];
 
     const dodgeChance = Math.random(); // Generate a random number between 0 and 1 for dodge chance
-    const isDodge = dodgeChance < 0.2; // 20% dodge chance
+    const isDodge = dodgeChance < 0.1; // 10% dodge chance
 
     const playerImageElement = document.querySelector(".player-img");
     const enemyImageElement = document.querySelector(".enemy-img");
-    const enemyTextDamage = document.querySelector(".enemy-damage");
+
     if (isDodge) {
       // Player dodges the attack
       setIsPlayerTurn(true);
@@ -591,14 +594,12 @@ const Game = () => {
       updateMessage(newMessage);
       playerImageElement.classList.add("player-dodged-animation");
       enemyImageElement.classList.add("enemy-attack-animation");
-      enemyTextDamage.classList.add(".enemy-attack-text");
       setEnemyDamage("dodged");
       console.log('player dodged')
       playMissed();
       setTimeout(() => {
         playerImageElement.classList.remove("player-dodged-animation");
         enemyImageElement.classList.remove("enemy-attack-animation");
-        enemyTextDamage.classList.remove(".enemy-attack-text");
       }, 500);
 
     } else {
@@ -627,10 +628,11 @@ const Game = () => {
 
         playerImageElement.classList.add("player-damage-animation");
         enemyImageElement.classList.add("enemy-attack-animation");
-        enemyTextDamage.classList.add(".enemy-attack-text");
+
         setTimeout(() => {
           playerImageElement.classList.remove("player-damage-animation");
           enemyImageElement.classList.remove("enemy-attack-animation");
+
         }, 500);
         if (updatedPlayer.health <= 0) {
           // Player defeated
@@ -661,6 +663,7 @@ const Game = () => {
       // Attack animation
       const playerImageElement = document.querySelector(".player-img");
       const enemyImageElement = document.querySelector(".enemy-img");
+      enemyImageElement.classList.remove("enemy-appeared-animation");
       playerImageElement.classList.add("magic-attack-animation");
 
 
@@ -668,6 +671,7 @@ const Game = () => {
         enemyImageElement.classList.add("enemy-damage-animation");
         playerImageElement.classList.remove("magic-attack-animation");
       }, 500);
+
 
       const updatedEnemies = [...enemies];
       const currentEnemy = updatedEnemies[currentEnemyIndex];
@@ -678,14 +682,16 @@ const Game = () => {
         if (currentEnemy.health <= 0) {
           // Enemy defeated
           currentEnemy.health = 0; // Ensure health doesn't go below 0
-
           // Increase player XP
           const xpGained = currentEnemy.xp;
           setPlayer((prevPlayer) => ({
             ...prevPlayer,
             xp: prevPlayer.xp + xpGained,
           }));
-
+          setTimeout(() => {
+            enemyImageElement.classList.remove("enemy-damage-animation");
+            enemyImageElement.classList.add("enemy-defeated-animation");
+          }, 500);
           // Check if player levels up
           if (player.xp >= player.xpToLevelUp) {
             setPlayer((prevPlayer) => ({
@@ -712,7 +718,10 @@ const Game = () => {
             setIsPlayerTurn(false);
 
           }
-
+          setTimeout(() => {
+            enemyImageElement.classList.add("enemy-defeated-animation");
+          }, 500);
+          
           setEnemies(updatedEnemies);
           setTimeout(() => {
             // Continue to the next enemy
@@ -720,19 +729,28 @@ const Game = () => {
             setCurrentEnemyIndex(nextEnemyIndex);
 
             // Reset the health of the next enemy
-
+            enemyImageElement.classList.remove("enemy-defeated-animation");
+            
             const nextEnemy = getRandomEnemy();
             updatedEnemies[nextEnemyIndex] = nextEnemy;
+            enemyImageElement.classList.add("enemy-appeared-animation");
           }, 1650);
+          
+
           setTimeout(() => {
             setPlayerDamage(magicDamage);
             playDefeated();
+
           }, 500);
+
           setTimeout(() => {
+            enemyImageElement.classList.remove("enemy-appeared-animation");
             const newMessage = `A new enemy came up! Prepare to fight!`;
             updateMessage(newMessage);
           }, 500); // Delay of 2 seconds before showing the next enemy arrival message
+          
           console.log(`new enemy: ${currentEnemy.name}`)
+
         } else {
           // Enemy still alive
           const newMessage =
@@ -742,6 +760,7 @@ const Game = () => {
           setPlayerDamage(magicDamage);
           console.log(`player attacked ${currentEnemy.name} with magic: ${magicDamage}`)
         }
+        enemyImageElement.classList.remove("enemy-appeared-animation");
       }, 500);
 
 
@@ -762,6 +781,7 @@ const Game = () => {
   ]);
 
   const handleNextTurn = useCallback(() => {
+
     if (!gameOver && isPlayerTurn) {
       const magicAttack = isMagicAttack ? playerAttack : null;
       playerAttack(magicAttack);
@@ -855,17 +875,11 @@ const Game = () => {
               </div>
             </div>
             <div className="sprites">
-            <p className="player-damage">
-                   {playerDamage}
-                </p>
               <EnemyImage
                 className="enemy-img"
                 src={enemies[currentEnemyIndex].img}
                 alt={enemies[currentEnemyIndex].name}
               />
-              <p className="enemy-damage">
-                   {enemyDamage}
-                </p>
               <PlayerImage
                 className="player-img"
                 src={player.img}

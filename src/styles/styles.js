@@ -1,4 +1,4 @@
-import styled, { keyframes } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 
 //player attack
 const playerAttack = keyframes`
@@ -135,7 +135,7 @@ const enemyAttack = keyframes`
 `;
 //enemy took damage
 const enemyTookDamage = keyframes`
-  0% {
+0% {
     transform: translate(0px, 0px);
   }
   20% {
@@ -197,26 +197,81 @@ const enemyDodged = keyframes`
   }
 `;
 
-//enemy dodged
-const damageText = keyframes`
-  0% {
-    color: red;
-    transform: translateY(0);
+//enemy defeated
+const enemyDefeated = keyframes`
+  0%{
+    opacity: 1;
+  }
+  10%{
     opacity: 0;
   }
-
-  20%{
-    transform: translateY(5px);
-    opacity: 1;
-    color: blue;
+  20% {
+    filter: brightness(200000) contrast(2000) saturate(0) invert(1);
+  }
+  30%{
+    filter: grayscale(100%) sepia(100%) hue-rotate(33deg) saturate(6);
+    opacity: 0.8;
   }
 
+  35%{
+    opacity: 1;
+  }
+
+  40%{
+    filter: brightness(200000) contrast(2000) saturate(0) invert(1);
+    opacity: 0;
+  } 
+
+  50%{
+    opacity: 1;
+    filter: grayscale(100%) sepia(100%) hue-rotate(33deg) saturate(6);
+  }
+  55%{
+    opacity: 0;
+  }
+  70%{
+    opacity: 1;
+    filter: brightness(200000) contrast(2000) saturate(0) invert(1);
+  }
   100% {
-    transform: translateY(10px);
-    color: blueviolet;
+    opacity: 0;
+    filter: grayscale(100%) sepia(100%) hue-rotate(33deg) saturate(6);
   }
 `;
 
+//new enemy appears
+const enemyAppeared = keyframes`
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  10% {
+    transform: translateY(5px);
+  }
+
+  20%{
+    opacity: 1;
+    transform: translateY(-5px);
+  }
+
+  25%{
+    transform: translateY(-15px);
+  }
+
+  35%{
+    transform: translateY(-25px);
+  }
+  50%{
+    transform: translateY(-10px);
+  }
+
+  60%{
+    transform: translateY(0px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+`;
 export const Padrao = {
   colors: {
     primary: "#94ff29",
@@ -300,6 +355,13 @@ export const EnemyImage = styled.img`
 
   &.enemy-dodged-animation {
     animation: ${enemyDodged} 0.5s;
+  }
+
+  &.enemy-defeated-animation {
+    animation: ${enemyDefeated} 0.8s;
+  }
+  &.enemy-appeared-animation {
+    animation: ${enemyAppeared} 0.5s;
   }
 `;
 
@@ -418,26 +480,6 @@ export const Screen = styled(ContainerDefault)`
   padding: 10px;
   border: 5px solid ${Padrao.colors.black};
   flex-direction: column;
-
-  .enemy-damage{
-    position: absolute;
-    bottom: 40%;
-    right: 22%;
-    z-index: 2;
-    &.enemy-attack-text {
-      animation: ${damageText} 0.5s;
-    }
-  }
-
-  .player-damage{
-    z-index: 2;
-    position: absolute;
-    bottom: 40%;
-    left: 30%;
-    &.player-attack-text {
-      animation: ${damageText} 0.5s;
-    }
-  }
 `;
 
 export const ActionWindow = styled(ContainerDefault)`
@@ -500,3 +542,4 @@ export const ConsoleLog = styled(ContainerDefault)`
   }
   
 `
+
