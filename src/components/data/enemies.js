@@ -1,25 +1,70 @@
 const getRandomEnemy = () => {
-    
     const enemyTypes = [
-        { name: "Slime1", maxHealth: 40, atk: 12 },
-        { name: "Slime2", maxHealth: 40, atk: 12 },
-        { name: "Slime3", maxHealth: 40, atk: 12 },
-        { name: "Slime4", maxHealth: 40, atk: 12 },
-        { name: "Slime5", maxHealth: 40, atk: 12 },
-        { name: "Slime6", maxHealth: 40, atk: 12 },
-        // Add more enemy types as needed
+      {
+        name: "Goblin",
+        maxHealth: 12,
+        atk: 3,
+        xp: 6,
+        img: "./assets/goblin.png",
+      },
+      {
+        name: "Goblin",
+        maxHealth: 18,
+        atk: 4,
+        xp: 10,
+        img: "./assets/goblin.png",
+      },
+      {
+        name: "Goblin",
+        maxHealth: 20,
+        atk: 5,
+        xp: 12,
+        img: "./assets/goblin.png",
+      },
+      {
+        name: "Spider",
+        maxHealth: 14,
+        atk: 6,
+        xp: 8,
+        img: "./assets/spider.png",
+      },
+      {
+        name: "Spider",
+        maxHealth: 20,
+        atk: 7,
+        xp: 10,
+        img: "./assets/spider.png",
+      },
+      {
+        name: "Spider",
+        maxHealth: 22,
+        atk: 8,
+        xp: 12,
+        img: "./assets/spider.png",
+      },
+      { name: "Thief", maxHealth: 28, atk: 9, xp: 20, img: "./assets/ppl.png" },
+      { name: "Thief", maxHealth: 28, atk: 9, xp: 20, img: "./assets/ppl.png" },
+      { name: "Thief", maxHealth: 28, atk: 9, xp: 20, img: "./assets/ppl.png" },
+      { name: "Wolf", maxHealth: 16, atk: 7, xp: 10, img: "./assets/wolf.png" },
+      { name: "Wolf", maxHealth: 16, atk: 7, xp: 10, img: "./assets/wolf.png" },
+      { name: "Wolf", maxHealth: 16, atk: 7, xp: 10, img: "./assets/wolf.png" },
+      {
+        name: "Dragon",
+        maxHealth: 100,
+        atk: 20,
+        xp: 300,
+        img: "./assets/dragon.png",
+      }
     ];
-    // console.log("enemyTypes: ", enemyTypes[0])
-
+  
+  
     const randomIndex = Math.floor(Math.random() * enemyTypes.length);
     const randomEnemy = enemyTypes[randomIndex];
-
+  
     return {
-        ...randomEnemy,
-        health: randomEnemy.maxHealth,
-        atk: randomEnemy.atk
+      ...randomEnemy,
+      health: randomEnemy.maxHealth,
     };
-    
-};
+  };
 
-export default getRandomEnemy;
+export {getRandomEnemy};

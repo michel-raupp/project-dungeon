@@ -17,42 +17,108 @@ const magicAttack = keyframes`
   0% {
     transform: translateX(0);
   }
+  10%{
+    filter: grayscale(100%) sepia(100%) hue-rotate(33deg) saturate(6);
+  }
+  11%{
+    filter: brightness(200000) contrast(2000) saturate(0);
+  }
+  12%{
+    filter: grayscale(100%) sepia(100%) hue-rotate(33deg) saturate(6);
+  }
+  13%{
+    filter: brightness(200000) contrast(2000) saturate(0) invert(1);
+  }
+  14%{
+    filter: grayscale(100%) sepia(100%) hue-rotate(33deg) saturate(6);
+  }
+  15%{
+    filter: brightness(200000) contrast(2000) saturate(0); 
+  }
+  16%{
+    filter: grayscale(100%) sepia(100%) hue-rotate(33deg) saturate(6);
+  }
+  17%{
+    filter: brightness(200000) contrast(2000) saturate(0) invert(1);
+  }
+  18%{
+    filter: grayscale(100%) sepia(100%) hue-rotate(33deg) saturate(6);
+  }
+  19%{
+    filter: brightness(200000) contrast(2000) saturate(0);
+  }
   20%{
     transform: translateX(10px);
-  }
-  25%{
-    filter: brightness(200000) contrast(2000) saturate(0);
-  }
-
-  30%{
     filter: grayscale(100%) sepia(100%) hue-rotate(33deg) saturate(6);
   }
-
-  35%{
-    filter: brightness(200000) contrast(2000) saturate(0);
+  21%{
+    filter: brightness(200000) contrast(2000) saturate(0) invert(1);
   }
-
-  40%{
+  22%{
+    opacity: 1;
     filter: grayscale(100%) sepia(100%) hue-rotate(33deg) saturate(6);
   }
-
-  45%{
-    filter: brightness(200000) contrast(2000) saturate(0);
+  23%{
+    filter: brightness(200000) contrast(2000) saturate(0) invert(1);
   }
-  50%{
+  24%{
     filter: grayscale(100%) sepia(100%) hue-rotate(33deg) saturate(6);
-    transform: translateX(15px);
+    opacity: 0;
   }
-
-  70% {
-    filter: grayscale(100%) sepia(100%) hue-rotate(33deg) saturate(6) ;
-    transform: translateX(-50px);
-  }
-  80%{
-    filter: grayscale(100%) sepia(100%) hue-rotate(33deg) saturate(6);
-  }
-  100% {
+  26% {
+    filter: brightness(200000) contrast(2000) saturate(0) invert(1);
+    transform: translateX(-40px);
     
+  }
+
+  60%{
+    filter: grayscale(100%) sepia(100%) hue-rotate(33deg) saturate(6);
+  }
+  62%{
+    opacity: 1;
+    filter: brightness(200000) contrast(2000) saturate(0); 
+
+  }
+  63%{
+    opacity: 0; 
+    filter: brightness(200000) contrast(2000) saturate(0) invert(1); 
+  }
+  64%{
+    opacity: 1;
+    filter: grayscale(100%) sepia(100%) hue-rotate(33deg) saturate(6);
+  }
+  65%{
+    opacity: 0;  
+    filter: brightness(200000) contrast(2000) saturate(0); 
+  }
+  66%{
+    opacity: 1;
+    filter: grayscale(100%) sepia(100%) hue-rotate(33deg) saturate(6);
+  }
+  67%{
+    opacity: 0;
+    filter: brightness(200000) contrast(2000) saturate(0) invert(1); 
+  }
+  68%{
+    opacity: 1;
+    filter: grayscale(100%) sepia(100%) hue-rotate(33deg) saturate(6);
+
+  }
+  70%{
+    opacity: 0;
+    filter: brightness(200000) contrast(2000) saturate(0); 
+  }
+  72%{
+    filter: grayscale(100%) sepia(100%) hue-rotate(33deg) saturate(6);
+    opacity: 1;
+  }
+
+  90%{
+    transform: translateX(-55px);
+    
+  }
+
+  94% {
     transform: translateX(0);
   }
 `;
@@ -332,7 +398,7 @@ export const PlayerImage = styled.img`
     animation: ${playerAttack} 0.5s;
   }
   &.magic-attack-animation {
-    animation: ${magicAttack} 0.5s;
+    animation: ${magicAttack} 2.5s;
   }
   &.player-damage-animation {
     animation: ${tookDamage} 0.5s;

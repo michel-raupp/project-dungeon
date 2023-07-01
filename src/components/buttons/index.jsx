@@ -13,9 +13,13 @@ import TookDamage from '../../assets/sounds/took-damage.mp3'
 import Reward from '../../assets/sounds/reward.mp3'
 import Missed from '../../assets/sounds/missed.mp3'
 import Defeated from '../../assets/sounds/enemy-defeated.mp3'
+import MagicAttack from '../../assets/sounds/magic-attack.mp3'
+import MagicCharge from '../../assets/sounds/magic-charge2.mp3'
 
 // background sound
 // https://www.youtube.com/watch?v=uIfD2BKaD2k
+
+//https://www.youtube.com/@soundfx6482
 
 export const Botoes = styled(ContainerDefault)`
   flex-direction: column;
@@ -72,54 +76,67 @@ export const Botao = styled(ContainerDefault)`
 
 const playEnemyDamageSFX = () => {
     const sfx = new Audio(PlayerAttack);
-    sfx.play();
+    sfx.currentTime = 0.2;
     sfx.volume = .5;
+    sfx.play();
 };
 
 const playCriticalHit = () => {
     const sfx = new Audio(CriticalHit);
-    sfx.play();
     sfx.volume = .5;
+    sfx.play();
 };
 
 const playTookDamage = () => {
     const sfx = new Audio(TookDamage);
-    sfx.play();
     sfx.volume = .5;
+    sfx.play();
 };
 
 const playReward = () => {
     const sfx = new Audio(Reward);
     sfx.currentTime = 0.4;
+    sfx.volume = .5;
     setTimeout(() => {
         sfx.play();
     }, 500);
-    sfx.volume = .5;
 };
 
 const playMissed = () => {
     const sfx = new Audio(Missed);
     sfx.currentTime = 0.4;
-    sfx.play();
     sfx.volume = .5;
+    sfx.play();
 };
 
 const playDefeated = () => {
     const sfx = new Audio(Defeated);
     sfx.currentTime = 0.4;
-    sfx.play();
     sfx.volume = .5;
+    setTimeout(() => {
+        sfx.play();
+    }, 100);
+
+};
+
+const playMagicAttack = () => {
+    const sfx = new Audio(MagicAttack);
+    const charge = new Audio(MagicCharge);
+    charge.volume = .5;
+    setTimeout(() => {
+        charge.play();
+    }, 200);
 };
 
 const BackgroundMusic = ({ isMuted }) => {
     useEffect(() => {
         const audio = new Audio(Music);
         audio.loop = true;
-        audio.volume = isMuted ? 0 : .3;
+        audio.volume = isMuted ? 0 : 0;
 
         const playMusic = () => {
             if (isMuted) {
-                audio.volume = .1;
+                audio.volume = 0;
             }
             audio.play()
                 .catch(error => {
@@ -174,4 +191,4 @@ export default function BotoesWrapper() {
     );
 }
 
-export { BackgroundMusic, playEnemyDamageSFX, playCriticalHit, playTookDamage, playReward, playMissed, playDefeated };
+export { BackgroundMusic, playEnemyDamageSFX, playCriticalHit, playTookDamage, playReward, playMissed, playDefeated, playMagicAttack };

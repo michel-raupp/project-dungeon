@@ -11,173 +11,11 @@ import {
   StartButton,
   StyledHome,
 } from "../../styles/styles";
-import BotoesWrapper, { playDefeated, playMissed, playReward, playTookDamage } from "../buttons";
+import BotoesWrapper, { playDefeated, playMagicAttack, playMissed, playReward, playTookDamage } from "../buttons";
 import { playEnemyDamageSFX, playCriticalHit } from '../buttons/index';
+import { getRandomEnemy } from "../data/enemies";
+import {items} from "../data/items";
 
-const items = [
-  {
-    id: 1,
-    name: "Small Health Potion",
-    type: "Consumable",
-    attributes: {
-      healthRestore: 20
-    },
-    quantity: 5
-  },
-  {
-    id: 2,
-    name: "Small Mana Potion",
-    type: "Consumable",
-    attributes: {
-      manaRestore: 15
-    },
-    quantity: 5
-  },
-  {
-    id: 3,
-    name: "Health Potion",
-    type: "Consumable",
-    attributes: {
-      healthRestore: 35
-    },
-    quantity: 5
-  },
-  {
-    id: 4,
-    name: "Mana Potion",
-    type: "Consumable",
-    attributes: {
-      manaRestore: 30
-    },
-    quantity: 5
-  },
-  {
-    id: 5,
-    name: "Royal Sword",
-    type: "sword",
-    attributes: {
-      damageBonus: 3,
-    },
-    quantity: 1
-  },
-  {
-    id: 6,
-    name: "Royal Shield",
-    type: "shield",
-    attributes: {
-      healthBonus: 5,
-    },
-    quantity: 1
-  },
-  {
-    id: 7,
-    name: "Mithril Sword",
-    type: "sword",
-    attributes: {
-      damageBonus: 5,
-    },
-    quantity: 1
-  },
-  {
-    id: 8,
-    name: "Mithril Shield",
-    type: "shield",
-    attributes: {
-      healthBonus: 8,
-    },
-    quantity: 1
-  },
-  {
-    id: 9,
-    name: "Dragon Sword",
-    type: "sword",
-    attributes: {
-      damageBonus: 9,
-    },
-    quantity: 3
-  },
-  {
-    id: 10,
-    name: "Dragon Shield",
-    type: "shield",
-    attributes: {
-      healthBonus: 15,
-    },
-    quantity: 3
-  }
-];
-
-
-
-
-const getRandomEnemy = () => {
-  const enemyTypes = [
-    {
-      name: "Goblin",
-      maxHealth: 12,
-      atk: 3,
-      xp: 6,
-      img: "./assets/goblin.png",
-    },
-    {
-      name: "Goblin",
-      maxHealth: 18,
-      atk: 4,
-      xp: 10,
-      img: "./assets/goblin.png",
-    },
-    {
-      name: "Goblin",
-      maxHealth: 20,
-      atk: 5,
-      xp: 12,
-      img: "./assets/goblin.png",
-    },
-    {
-      name: "Spider",
-      maxHealth: 14,
-      atk: 6,
-      xp: 8,
-      img: "./assets/spider.png",
-    },
-    {
-      name: "Spider",
-      maxHealth: 20,
-      atk: 7,
-      xp: 10,
-      img: "./assets/spider.png",
-    },
-    {
-      name: "Spider",
-      maxHealth: 22,
-      atk: 8,
-      xp: 12,
-      img: "./assets/spider.png",
-    },
-    { name: "Thief", maxHealth: 28, atk: 9, xp: 20, img: "./assets/ppl.png" },
-    { name: "Thief", maxHealth: 28, atk: 9, xp: 20, img: "./assets/ppl.png" },
-    { name: "Thief", maxHealth: 28, atk: 9, xp: 20, img: "./assets/ppl.png" },
-    { name: "Wolf", maxHealth: 16, atk: 7, xp: 10, img: "./assets/wolf.png" },
-    { name: "Wolf", maxHealth: 16, atk: 7, xp: 10, img: "./assets/wolf.png" },
-    { name: "Wolf", maxHealth: 16, atk: 7, xp: 10, img: "./assets/wolf.png" },
-    {
-      name: "Dragon",
-      maxHealth: 100,
-      atk: 20,
-      xp: 300,
-      img: "./assets/dragon.png",
-    }
-  ];
-
-
-  const randomIndex = Math.floor(Math.random() * enemyTypes.length);
-  const randomEnemy = enemyTypes[randomIndex];
-
-  return {
-    ...randomEnemy,
-    health: randomEnemy.maxHealth,
-  };
-};
 
 const Game = () => {
 
@@ -186,8 +24,8 @@ const Game = () => {
       name: "Player",
       maxHealth: 40,
       health: 40,
-      maxMana: 30,
-      mana: 30,
+      maxMana: 300,
+      mana: 300,
       attack: 4,
       swordDamage: 0,
       shieldHealth: 0,
@@ -266,7 +104,6 @@ const Game = () => {
     // Set default color for other messages
     return 'white';
   };
-
 
   const playerAttack = useCallback(() => {
     if (!isPlayerTurn || gameOver) {
@@ -656,6 +493,7 @@ const Game = () => {
       ...prevPlayer,
       mana: prevPlayer.mana - 20,
     }));
+    
   }, [setPlayer]);
 
   useEffect(() => {
@@ -665,12 +503,11 @@ const Game = () => {
       const enemyImageElement = document.querySelector(".enemy-img");
       enemyImageElement.classList.remove("enemy-appeared-animation");
       playerImageElement.classList.add("magic-attack-animation");
-
-
+      playMagicAttack();
       setTimeout(() => {
         enemyImageElement.classList.add("enemy-damage-animation");
         playerImageElement.classList.remove("magic-attack-animation");
-      }, 500);
+      }, 2500);
 
 
       const updatedEnemies = [...enemies];
@@ -761,7 +598,7 @@ const Game = () => {
           console.log(`player attacked ${currentEnemy.name} with magic: ${magicDamage}`)
         }
         enemyImageElement.classList.remove("enemy-appeared-animation");
-      }, 500);
+      }, 2500);
 
 
       setIsMagicAttack(false);
@@ -801,7 +638,7 @@ const Game = () => {
         setIsPlayerTurn(true);
       }
     } else {
-      setIsPlayerTurn(true);
+      setIsPlayerTurn(false);
     }
   }, [
     isPlayerTurn,
