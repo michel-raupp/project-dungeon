@@ -10,10 +10,10 @@ import {
   StartButton,
   StyledHome,
 } from "../../styles/styles";
-import BotoesWrapper, { playDefeated, playMagicAttack, playMissed, playReward, playTookDamage } from "../buttons";
-import { playEnemyDamageSFX, playCriticalHit } from '../buttons/index';
-import { getRandomEnemy } from "../data/enemies";
-import {items} from "../data/items";
+import BotoesWrapper, { playDefeated, playMagicAttack, playMissed, playReward, playTookDamage } from "../buttons-and-sounds";
+import { playEnemyDamageSFX, playCriticalHit } from '../buttons-and-sounds/index';
+import { getRandomEnemy, handleEnemyDefeated } from "../data/enemies";
+import { items } from "../data/items";
 import { useMessage, getMessageColor } from './message';
 
 const Game = () => {
@@ -25,7 +25,7 @@ const Game = () => {
       health: 40,
       maxMana: 300,
       mana: 300,
-      attack: 4,
+      attack: 5,
       swordDamage: 0,
       shieldHealth: 0,
       xp: 0,
@@ -45,9 +45,8 @@ const Game = () => {
   const [gameOver, setGameOver] = useState(false);
   const [isMagicAttack, setIsMagicAttack] = useState(false);
   const [enemies, setEnemies] = useState([getRandomEnemy()]);
-
-
   const targetRef = useRef(null);
+
 
   useEffect(() => {
     if (targetRef.current) {
@@ -59,7 +58,7 @@ const Game = () => {
     if (!isPlayerTurn || gameOver) {
       return; // Prevent attack if it's not the player's turn or the game is over
     }
-
+    setIsPlayerTurn(false)
     function checkRandomEvent() {
       // Generate a random number between 0 and 1
       const randomNumber = Math.random();
@@ -177,7 +176,7 @@ const Game = () => {
 
     const missChance = Math.random(); // Generate a random number between 0 and 1 for critical hit chance
     const isMissed = missChance < 0.1; // Assuming a 10% miss hit chance
-
+    setIsPlayerTurn(false)
     if (isMissed) {
 
       console.log("Attack missed!");
@@ -230,9 +229,10 @@ const Game = () => {
       }, 500);
 
       if (currentEnemy.health - playerDamage <= 0) {
-        // Enemy defeated
-
+        // Enemy 
+        setIsPlayerTurn(false)
         setTimeout(() => {
+          setIsPlayerTurn(false)
           enemyImageElement.classList.add("enemy-defeated-animation");
         }, 500);
 
@@ -242,16 +242,18 @@ const Game = () => {
         // Increase player XP
         const xpGained = currentEnemy.xp;
         updatedPlayer.xp += xpGained;
-        
+
         const randomStatsNumber = {
           xpToLevelUp: Math.floor(Math.random() * 2) + 8,
           maxHealth: Math.floor(Math.random() * 15) + 5,
           maxMana: Math.floor(Math.random() * 5) + 5,
           attack: Math.floor(Math.random() * 2) + 1
         };
+
         const newMessage = `You defeated the ${currentEnemy.name} and gained ${xpGained} XP.`;
         playDefeated();
-  
+
+        handleEnemyDefeated();
         updateMessage(newMessage);
         // Check if player levels up
         while (updatedPlayer.xp >= updatedPlayer.xpToLevelUp) {
@@ -276,7 +278,6 @@ const Game = () => {
           console.log("------------------------------")
           console.log("");
         }
-
 
         // Generate a random event to check if an item is found
         const foundItem = checkRandomEvent();
@@ -319,6 +320,7 @@ const Game = () => {
           }
         }
 
+        setIsPlayerTurn(false)
         setPlayer(updatedPlayer);
         setTimeout(() => {
           // Continue to the next enemy
@@ -329,8 +331,9 @@ const Game = () => {
           const nextEnemy = getRandomEnemy();
           updatedEnemies[nextEnemyIndex] = nextEnemy;
           enemyImageElement.classList.add("enemy-appeared-animation");
+
         }, 500);
-        
+
         setTimeout(() => {
           enemyImageElement.classList.remove("enemy-appeared-animation");
           const newMessage = `A new enemy came up! Prepare to fight!`;
@@ -338,6 +341,7 @@ const Game = () => {
         }, 1000); // Delay of 1.65 seconds before showing the next enemy arrival message
         console.log(`new enemy: ${currentEnemy.name}`);
         console.log(`player health: ${player.health}`);
+
       } else {
         // Enemy still alive
         const newMessage = `You attacked the ${currentEnemy.name} and dealt ${playerDamage} damage.`;
@@ -444,7 +448,7 @@ const Game = () => {
       ...prevPlayer,
       mana: prevPlayer.mana - 20,
     }));
-    
+
   }, [setPlayer]);
 
   useEffect(() => {
@@ -456,6 +460,7 @@ const Game = () => {
       playerImageElement.classList.add("magic-attack-animation");
       playMagicAttack();
       setTimeout(() => {
+        setIsPlayerTurn(false)
         enemyImageElement.classList.add("enemy-damage-animation");
         playerImageElement.classList.remove("magic-attack-animation");
       }, 2500);
@@ -468,6 +473,8 @@ const Game = () => {
       setTimeout(() => {
         currentEnemy.health -= magicDamage; // Subtract the magic damage from enemy's health
         if (currentEnemy.health <= 0) {
+          setIsPlayerTurn(false)
+
           // Enemy defeated
           currentEnemy.health = 0; // Ensure health doesn't go below 0
           // Increase player XP
@@ -477,6 +484,7 @@ const Game = () => {
             xp: prevPlayer.xp + xpGained,
           }));
           setTimeout(() => {
+
             enemyImageElement.classList.remove("enemy-damage-animation");
             enemyImageElement.classList.add("enemy-defeated-animation");
           }, 500);
@@ -509,7 +517,7 @@ const Game = () => {
           setTimeout(() => {
             enemyImageElement.classList.add("enemy-defeated-animation");
           }, 500);
-          
+
           setEnemies(updatedEnemies);
           setTimeout(() => {
             // Continue to the next enemy
@@ -518,12 +526,12 @@ const Game = () => {
 
             // Reset the health of the next enemy
             enemyImageElement.classList.remove("enemy-defeated-animation");
-            
+
             const nextEnemy = getRandomEnemy();
             updatedEnemies[nextEnemyIndex] = nextEnemy;
             enemyImageElement.classList.add("enemy-appeared-animation");
           }, 1650);
-          
+
 
           setTimeout(() => {
             setPlayerDamage(magicDamage);
@@ -536,7 +544,7 @@ const Game = () => {
             const newMessage = `A new enemy came up! Prepare to fight!`;
             updateMessage(newMessage);
           }, 500); // Delay of 2 seconds before showing the next enemy arrival message
-          
+
           console.log(`new enemy: ${currentEnemy.name}`)
 
         } else {
@@ -579,14 +587,15 @@ const Game = () => {
       if (currentEnemy && currentEnemy.health > 0) {
         setTimeout(() => {
           enemyAttack();
-          setIsPlayerTurn(true);
-        }, 2000);
+          setIsPlayerTurn(false);
+        }, 1000);
       } else {
+
         const nextEnemyIndex = currentEnemyIndex + 1;
         if (nextEnemyIndex < enemies.length) {
           setCurrentEnemyIndex(nextEnemyIndex);
         }
-        setIsPlayerTurn(true);
+
       }
     } else {
       setIsPlayerTurn(false);
@@ -609,7 +618,7 @@ const Game = () => {
           enemyAttack();
         }
         setIsPlayerTurn(true);
-      }, 2000); // 2 second delay
+      }, 2500); // 2 second delay
 
       return () => clearTimeout(delay);
     }
