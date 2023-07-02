@@ -1,108 +1,56 @@
 const enemyTypes = [
+  // Region 1 Enemies
   {
     name: "Goblin",
     region: 1,
-    maxHealth: 12,
-    atk: 3,
-    xp: 6,
-    img: "./assets/goblin.png",
-  },
-  {
-    name: "Goblin",
-    region: 1,
-    maxHealth: 18,
-    atk: 4,
-    xp: 10,
-    img: "./assets/goblin.png",
-  },
-  {
-    name: "Goblin",
-    region: 1,
-    maxHealth: 20,
-    atk: 5,
-    xp: 12,
+    maxHealth: 10 + Math.floor(Math.random() * 5),
+    atk: 2 + Math.floor(Math.random() * 2),
+    xp: 5 + Math.floor(Math.random() * 2),
     img: "./assets/goblin.png",
   },
   {
     name: "Spider",
     region: 1,
-    maxHealth: 14,
-    atk: 6,
-    xp: 8,
+    maxHealth: 12 + Math.floor(Math.random() * 6),
+    atk: 3 + Math.floor(Math.random() * 2),
+    xp: 6 + Math.floor(Math.random() * 2),
     img: "./assets/spider.png",
   },
+  // Region 1.5 Boss
   {
-    name: "Spider",
-    region: 1,
-    maxHealth: 20,
-    atk: 7,
-    xp: 10,
-    img: "./assets/spider.png",
+    name: "Dragon",
+    region: 1.5,
+    maxHealth: 80 + Math.floor(Math.random() * 21),
+    atk: 15 + Math.floor(Math.random() * 6),
+    xp: 50 + Math.floor(Math.random() * 11),
+    img: "./assets/dragon.png",
   },
-  {
-    name: "Spider",
-    region: 1,
-    maxHealth: 22,
-    atk: 8,
-    xp: 12,
-    img: "./assets/spider.png",
-  },
-  {
+   // Region 2 Enemies
+   {
     name: "Thief",
     region: 2,
-    maxHealth: 28,
-    atk: 9,
-    xp: 20,
-    img: "./assets/ppl.png"
-  },
-  {
-    name: "Thief",
-    region: 2,
-    maxHealth: 28,
-    atk: 9,
-    xp: 20,
-    img: "./assets/ppl.png"
-  },
-  {
-    name: "Thief",
-    region: 2,
-    maxHealth: 28,
-    atk: 9,
-    xp: 20,
-    img: "./assets/ppl.png"
+    maxHealth: 25 + Math.floor(Math.random() * 11),
+    atk: 7 + Math.floor(Math.random() * 4),
+    xp: 15 + Math.floor(Math.random() * 6),
+    img: "./assets/thief.png",
   },
   {
     name: "Wolf",
     region: 2,
-    maxHealth: 16,
-    atk: 7,
-    xp: 10,
-    img: "./assets/wolf.png"
-  },
-  {
-    name: "Wolf",
-    region: 2,
-    maxHealth: 16,
-    atk: 7,
-    xp: 10,
-    img: "./assets/wolf.png"
-  },
-  {
-    name: "Wolf",
-    region: 2,
-    maxHealth: 16,
-    atk: 7,
-    xp: 10,
-    img: "./assets/wolf.png"
+    maxHealth: 18 + Math.floor(Math.random() * 8),
+    atk: 5 + Math.floor(Math.random() * 4),
+    xp: 10 + Math.floor(Math.random() * 6),
+    img: "./assets/wolf.png",
   },
   {
     name: "Dragon",
-    region: 1.5, //boss
-    maxHealth: 100,
-    atk: 20,
-    xp: 300,
+    region: 2.5,
+    maxHealth: 150 + Math.floor(Math.random() * 31),
+    atk: 25 + Math.floor(Math.random() * 11),
+    xp: 100 + Math.floor(Math.random() * 21),
     img: "./assets/dragon.png",
-  }
+  },
+
 ];
 let defeatedEnemyCounter = 8;
 function handleEnemyDefeated() {

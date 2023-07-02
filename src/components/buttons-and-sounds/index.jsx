@@ -120,7 +120,6 @@ const playDefeated = () => {
 };
 
 const playMagicAttack = () => {
-    const sfx = new Audio(MagicAttack);
     const charge = new Audio(MagicCharge);
     charge.volume = .5;
     setTimeout(() => {
@@ -136,7 +135,7 @@ const BackgroundMusic = ({ isMuted }) => {
 
         const playMusic = () => {
             if (isMuted) {
-                audio.volume = 0;
+                audio.volume = .1;
             }
             audio.play()
                 .catch(error => {

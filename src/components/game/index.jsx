@@ -21,10 +21,10 @@ const Game = () => {
   const initialPlayerState = useMemo(
     () => ({
       name: "Player",
-      maxHealth: 40,
-      health: 40,
-      maxMana: 300,
-      mana: 300,
+      maxHealth: 50,
+      health: 50,
+      maxMana: 60,
+      mana: 60,
       attack: 5,
       swordDamage: 0,
       shieldHealth: 0,
