@@ -39,78 +39,58 @@ const magicAttack = keyframes`
     filter: grayscale(100%) sepia(100%) hue-rotate(33deg) saturate(6);
   }
   17%{
-    filter: brightness(200000) contrast(2000) saturate(0) invert(1);
+    opacity: 1;
   }
   18%{
-    filter: grayscale(100%) sepia(100%) hue-rotate(33deg) saturate(6);
+    opacity: 0;
   }
   19%{
-    filter: brightness(200000) contrast(2000) saturate(0);
+    opacity: 1;
   }
   20%{
-    transform: translateX(10px);
-    filter: grayscale(100%) sepia(100%) hue-rotate(33deg) saturate(6);
+    opacity: 0;
   }
   21%{
-    filter: brightness(200000) contrast(2000) saturate(0) invert(1);
+    opacity: 1;
   }
   22%{
-    opacity: 1;
-    filter: grayscale(100%) sepia(100%) hue-rotate(33deg) saturate(6);
+    opacity: 0;
   }
   23%{
-    filter: brightness(200000) contrast(2000) saturate(0) invert(1);
+    opacity: 1;
   }
   24%{
-    filter: grayscale(100%) sepia(100%) hue-rotate(33deg) saturate(6);
     opacity: 0;
   }
   26% {
-    filter: brightness(200000) contrast(2000) saturate(0) invert(1);
-    transform: translateX(-40px);
-    
-  }
-
-  60%{
-    filter: grayscale(100%) sepia(100%) hue-rotate(33deg) saturate(6);
-  }
-  62%{
     opacity: 1;
-    filter: brightness(200000) contrast(2000) saturate(0); 
-
+    transform: translateX(10px)
+  }
+  55%{
+    transform: translateX(10px);
+    opacity: 1;
+  }
+  57%{
+    opacity: 0; 
+  }
+  59%{
+    opacity: 1;  
+  }
+  61%{
+    opacity: 0;
   }
   63%{
-    opacity: 0; 
-    filter: brightness(200000) contrast(2000) saturate(0) invert(1); 
-  }
-  64%{
     opacity: 1;
-    filter: grayscale(100%) sepia(100%) hue-rotate(33deg) saturate(6);
   }
   65%{
-    opacity: 0;  
-    filter: brightness(200000) contrast(2000) saturate(0); 
-  }
-  66%{
-    opacity: 1;
-    filter: grayscale(100%) sepia(100%) hue-rotate(33deg) saturate(6);
+    opacity: 0;
   }
   67%{
-    opacity: 0;
-    filter: brightness(200000) contrast(2000) saturate(0) invert(1); 
-  }
-  68%{
     opacity: 1;
-    filter: grayscale(100%) sepia(100%) hue-rotate(33deg) saturate(6);
-
   }
-  70%{
-    opacity: 0;
-    filter: brightness(200000) contrast(2000) saturate(0); 
-  }
-  72%{
+  60%{
     filter: grayscale(100%) sepia(100%) hue-rotate(33deg) saturate(6);
-    opacity: 1;
+    transform: translateX(-40px);
   }
 
   90%{
@@ -118,7 +98,7 @@ const magicAttack = keyframes`
     
   }
 
-  94% {
+  100% {
     transform: translateX(0);
   }
 `;
@@ -398,7 +378,7 @@ export const PlayerImage = styled.img`
     animation: ${playerAttack} 0.5s;
   }
   &.magic-attack-animation {
-    animation: ${magicAttack} 2.5s;
+    animation: ${magicAttack} 0.5s;
   }
   &.player-damage-animation {
     animation: ${tookDamage} 0.5s;
