@@ -23,8 +23,8 @@ const Game = () => {
       name: "Player",
       maxHealth: 50,
       health: 50,
-      maxMana: 60,
-      mana: 60,
+      maxMana: 20,
+      mana: 20,
       attack: 5,
       swordDamage: 0,
       shieldHealth: 0,
@@ -245,8 +245,8 @@ const Game = () => {
 
         const randomStatsNumber = {
           xpToLevelUp: Math.floor(Math.random() * 2) + 8,
-          maxHealth: Math.floor(Math.random() * 15) + 5,
-          maxMana: Math.floor(Math.random() * 5) + 5,
+          maxHealth: Math.floor(Math.random() * 10) + 3,
+          maxMana: Math.floor(Math.random() * 3) + 2,
           attack: Math.floor(Math.random() * 2) + 1
         };
 
@@ -488,8 +488,8 @@ const Game = () => {
   
           const randomStatsNumber = {
             xpToLevelUp: Math.floor(Math.random() * 2) + 8,
-            maxHealth: Math.floor(Math.random() * 15) + 5,
-            maxMana: Math.floor(Math.random() * 5) + 5,
+            maxHealth: Math.floor(Math.random() * 10) + 3,
+            maxMana: Math.floor(Math.random() * 3) + 2,
             attack: Math.floor(Math.random() * 2) + 1
           };
   
