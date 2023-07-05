@@ -63,15 +63,15 @@ export const ButtonWrapper = styled(ContainerDefault)`
 `
 function CloseBtn({ onClose }) {
     return (
-      <ButtonWrapper onClick={onClose}>
-        X
-      </ButtonWrapper>
+        <ButtonWrapper onClick={onClose}>
+            X
+        </ButtonWrapper>
     );
-  }
+}
 
 
 
-  const Window = ({ onClose }) => {
+const Help = ({ onClose }) => {
     return (
         <Card>
             <div className='conteudo'>
@@ -119,4 +119,50 @@ function CloseBtn({ onClose }) {
         </Card>
     );
 };
-export default Window;
+
+const About = ({ onClose }) => {
+    return (
+        <Card>
+            <div className='conteudo'>
+                <div className='title'>
+                    <h3>
+                        About
+                    </h3>
+                    <CloseBtn onClose={onClose} />
+                </div>
+                <div class="organizador-help">
+                    <p>The Game</p>
+                </div>
+                <p>Project Dungeon is a simple turn-based RPG game. The objective of the game is defeat enemies as long as you can.
+                </p>
+
+                <div class="organizador-help">
+                    <p>Techonologies</p>
+                </div>
+                <p>Developed with React.Js and basic CSS animations.
+                </p>
+
+                <div class="organizador-help">
+                    <p>Who developed?</p>
+                </div>
+                <p>The project was designed and developed by me, 
+                    <br/>
+                    <br/>
+                    Michel Raupp de Olivera.
+                </p>
+
+                <div class="organizador-help">
+                    <p>Feedback</p>
+                </div>
+                <p>If you liked the game, have a suggestion or an idea, feel free to Contact me! 
+                </p>
+                <div class="organizador-help">
+                    
+                </div>
+
+
+            </div>
+        </Card>
+    );
+};
+export { Help, About };

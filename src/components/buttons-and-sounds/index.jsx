@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { ContainerDefault, Padrao } from '../../styles/styles'
 import sound from "../../assets/sound.svg";
 import help from "../../assets/help.svg";
-import configs from "../../assets/configs.svg";
+import about from "../../assets/configs.svg";
 import github from "../../assets/github.svg";
 import Music from "../../assets/sounds/music.mp3";
 import PlayerAttack from '../../assets/sounds/normal-attack2.mp3';
@@ -15,7 +15,7 @@ import Missed from '../../assets/sounds/missed.mp3'
 import Defeated from '../../assets/sounds/enemy-defeated.mp3'
 import MagicAttack from '../../assets/sounds/magic-attack.mp3'
 import MagicCharge from '../../assets/sounds/magic-charge2.mp3'
-import Window from '../windows';
+import { About, Help } from "../windows/index"
 
 // background sound
 // https://www.youtube.com/watch?v=uIfD2BKaD2k
@@ -156,38 +156,48 @@ const BackgroundMusic = ({ isMuted }) => {
 
 export default function BotoesWrapper() {
     const [isMuted, setIsMuted] = useState(true);
-    const [isOpen, setIsOpen] = useState(false);
-
-    const toggleWindow = () => {
-        setIsOpen(!isOpen);
+    const [isOpen, setIsOpen] = useState(0);
+  
+    const toggleHelp = () => {
+      setIsOpen(isOpen === 1 ? 0 : 1);
     };
-
+  
+    const toggleAbout = () => {
+      setIsOpen(isOpen === 2 ? 0 : 2);
+    };
+  
     const toggleMusic = () => {
-        setIsMuted(!isMuted);
+      setIsMuted(!isMuted);
     };
-
+  
     return (
-        <Botoes>
-            {isMuted && <BackgroundMusic isMuted={isMuted} />}
-            <Botao onClick={toggleMusic}>
-                <img src={sound} alt='sound' />
-                <p>{isMuted ? 'Mute' : 'Unmute'}</p>
-            </Botao>
-
-            <Botao onClick={toggleWindow}>
-                <img src={help} alt='help' />
-                <p>Help</p>
-            </Botao>
-            <a href="/">
-                <Botao>
-                    <img src={github} alt='Github' />
-                    <p>Github</p>
-                </Botao>
-            </a>
-            {isOpen && <Window onClose={toggleWindow} />}
-        </Botoes>
+      <Botoes>
+        {isMuted && <BackgroundMusic isMuted={isMuted} />}
+        <Botao onClick={toggleMusic}>
+          <img src={sound} alt='sound' />
+          <p>{isMuted ? 'Mute' : 'Unmute'}</p>
+        </Botao>
+  
+        <Botao onClick={toggleHelp}>
+          <img src={help} alt='help' />
+          <p>Help</p>
+        </Botao>
+        <Botao onClick={toggleAbout}>
+          <img src={about} alt='about me' />
+          <p>About</p>
+        </Botao>
+        <a href="https://github.com/michel-raupp" target='_blank' rel='noopener noreferrer'>
+          <Botao>
+            <img src={github} alt='Github' />
+            <p>Github</p>
+          </Botao>
+        </a>
+        {isOpen === 1 && <Help onClose={toggleHelp} />}
+        {isOpen === 2 && <About onClose={toggleAbout} />}
+      </Botoes>
     );
-}
+  }
+  
 
 
 
