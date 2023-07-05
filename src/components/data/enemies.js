@@ -178,6 +178,10 @@ function handleEnemyDefeated() {
   // Additional logic related to enemy defeated
 }
 
+function setDefeatedEnemyCounter(value) {
+  defeatedEnemyCounter = value;
+}
+
 function getDefeatedEnemyCounter() {
   if (defeatedEnemyCounter % 10 === 0 && defeatedEnemyCounter !== 0) {
     return "BOSS";
@@ -233,4 +237,4 @@ const getRandomEnemy = () => {
 };
 
 
-export { getRandomEnemy, handleEnemyDefeated, getDefeatedEnemyCounter };
+export { getRandomEnemy, handleEnemyDefeated, getDefeatedEnemyCounter, setDefeatedEnemyCounter };

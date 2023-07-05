@@ -6,7 +6,7 @@ const items = [
         name: "Small Health Potion",
         type: "Consumable",
         attributes: {
-            healthRestore: 20
+            healthRestore: 10
         },
         quantity: 5
     },
@@ -15,7 +15,7 @@ const items = [
         name: "Small Mana Potion",
         type: "Consumable",
         attributes: {
-            manaRestore: 15
+            manaRestore: 10
         },
         quantity: 5
     },
@@ -24,7 +24,7 @@ const items = [
         name: "Health Potion",
         type: "Consumable",
         attributes: {
-            healthRestore: 35
+            healthRestore: 15
         },
         quantity: 5
     },
@@ -33,7 +33,7 @@ const items = [
         name: "Mana Potion",
         type: "Consumable",
         attributes: {
-            manaRestore: 30
+            manaRestore: 15
         },
         quantity: 5
     },
@@ -42,7 +42,7 @@ const items = [
         name: "Royal Sword",
         type: "sword",
         attributes: {
-            damageBonus: 3,
+            damageBonus: 1,
         },
         quantity: 1
     },
@@ -51,45 +51,99 @@ const items = [
         name: "Royal Shield",
         type: "shield",
         attributes: {
-            healthBonus: 5,
+            healthBonus: 4,
         },
         quantity: 1
     },
     {
         id: 7,
-        name: "Mithril Sword",
+        name: "Guardian Blade",
         type: "sword",
         attributes: {
-            damageBonus: 5,
+            damageBonus: 2,
         },
         quantity: 1
     },
     {
         id: 8,
-        name: "Mithril Shield",
+        name: "Guardian Shield",
         type: "shield",
         attributes: {
-            healthBonus: 8,
+            healthBonus: 3,
         },
         quantity: 1
     },
     {
         id: 9,
+        name: "Blade of Justice",
+        type: "sword",
+        attributes: {
+            damageBonus: 4,
+        },
+        quantity: 1
+    },
+    {
+        id: 10,
+        name: "Divine Protector",
+        type: "shield",
+        attributes: {
+            healthBonus: 3,
+        },
+        quantity: 1
+    },
+    {
+        id: 11,
+        name: "Mithril Sword",
+        type: "sword",
+        attributes: {
+            damageBonus: 3,
+        },
+        quantity: 1
+    },
+    {
+        id: 12,
+        name: "Mithril Shield",
+        type: "shield",
+        attributes: {
+            healthBonus: 5,
+        },
+        quantity: 1
+    },
+    {
+        id: 13,
         name: "Dragon Sword",
         type: "sword",
         attributes: {
             damageBonus: 9,
         },
-        quantity: 3
+        quantity: 1
     },
     {
-        id: 10,
+        id: 14,
         name: "Dragon Shield",
         type: "shield",
         attributes: {
             healthBonus: 15,
         },
-        quantity: 3
+        quantity: 1
+    },
+    {
+        id: 13,
+        name: "Frostbite Sword",
+        type: "sword",
+        attributes: {
+            damageBonus: 15,
+        },
+        quantity: 1
+    },
+    {
+        id: 16,
+        name: "Stormshield",
+        type: "shield",
+        attributes: {
+            healthBonus: 15,
+        },
+        quantity: 1
     }
 ];
 

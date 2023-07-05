@@ -12,9 +12,10 @@ import {
 } from "../../styles/styles";
 import BotoesWrapper, { playDefeated, playMagicAttack, playMissed, playReward, playTookDamage } from "../buttons-and-sounds";
 import { playEnemyDamageSFX, playCriticalHit } from '../buttons-and-sounds/index';
-import { getDefeatedEnemyCounter, getRandomEnemy, handleEnemyDefeated } from "../data/enemies";
+import { getDefeatedEnemyCounter, getRandomEnemy, handleEnemyDefeated, setDefeatedEnemyCounter } from "../data/enemies";
 import { items } from "../data/items";
 import { useMessage, getMessageColor } from './message';
+import Window from "../windows";
 
 const Game = () => {
 
@@ -22,7 +23,7 @@ const Game = () => {
     () => ({
       name: "Player",
       maxHealth: 50,
-      health: 50,
+      health: 5,
       maxMana: 20,
       mana: 20,
       attack: 5,
@@ -633,6 +634,7 @@ const Game = () => {
   useEffect(() => {
     if (gameOver) {
       player.health = 0;
+      setDefeatedEnemyCounter(1);
     }
   }, [gameOver, player]);
 
@@ -651,9 +653,7 @@ const Game = () => {
   return (
     <StyledHome>
       <ContainerDefault ref={targetRef}>
-        <BotoesWrapper>
-
-        </BotoesWrapper>
+        <BotoesWrapper/>
       </ContainerDefault>
       <Console>
         <div className="frame">

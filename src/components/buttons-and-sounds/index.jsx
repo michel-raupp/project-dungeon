@@ -15,6 +15,7 @@ import Missed from '../../assets/sounds/missed.mp3'
 import Defeated from '../../assets/sounds/enemy-defeated.mp3'
 import MagicAttack from '../../assets/sounds/magic-attack.mp3'
 import MagicCharge from '../../assets/sounds/magic-charge2.mp3'
+import Window from '../windows';
 
 // background sound
 // https://www.youtube.com/watch?v=uIfD2BKaD2k
@@ -155,6 +156,11 @@ const BackgroundMusic = ({ isMuted }) => {
 
 export default function BotoesWrapper() {
     const [isMuted, setIsMuted] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
+
+    const toggleWindow = () => {
+        setIsOpen(!isOpen);
+    };
 
     const toggleMusic = () => {
         setIsMuted(!isMuted);
@@ -168,26 +174,21 @@ export default function BotoesWrapper() {
                 <p>{isMuted ? 'Mute' : 'Unmute'}</p>
             </Botao>
 
-            <a href="/">
-                <Botao>
-                    <img src={help} alt='help' />
-                    <p>Help</p>
-                </Botao>
-            </a>
-            <a href="/">
-                <Botao>
-                    <img src={configs} alt='Configs' />
-                    <p>Configs</p>
-                </Botao>
-            </a>
+            <Botao onClick={toggleWindow}>
+                <img src={help} alt='help' />
+                <p>Help</p>
+            </Botao>
             <a href="/">
                 <Botao>
                     <img src={github} alt='Github' />
                     <p>Github</p>
                 </Botao>
             </a>
+            {isOpen && <Window onClose={toggleWindow} />}
         </Botoes>
     );
 }
+
+
 
 export { BackgroundMusic, playEnemyDamageSFX, playCriticalHit, playTookDamage, playReward, playMissed, playDefeated, playMagicAttack };
