@@ -558,12 +558,15 @@ export const ConsoleLog = styled(ContainerDefault)`
     flex-direction: column-reverse;
     gap: 10px;
   }
+  ul li:first-child{
+    display: none;
+  }
   li{
     border-radius: 4px;
     border: 1px solid ${Padrao.colors.white};
     padding: 10px;
     font-size: 8px;
-    line-height: 1.2;
+    line-height: 1.6;
   }
 
   @media(max-width: 900px){

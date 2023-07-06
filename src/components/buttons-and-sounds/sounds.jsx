@@ -64,25 +64,17 @@ export const playMagicAttack = () => {
   }, 200);
 };
 
-let isPlaying = false; // Variável para controlar se o áudio está em reprodução
 const audio = new Audio(Music);
 
 export const BackgroundMusic = () => {
-  
-  // if (isPlaying) {
-  //   return; // Se o áudio já estiver em reprodução, interrompe a função
-  // }
 
   audio.play();
   audio.volume = soundVolume;
-
-  // isPlaying = true; // Define que o áudio está em reprodução
 };
 
 export const stopBackgroundMusic = () => {
   audio.pause();
   audio.currentTime = 0;
-  // isPlaying = false; // Define que o áudio não está mais em reprodução
 };
 
 export const toggleVolume = () => {

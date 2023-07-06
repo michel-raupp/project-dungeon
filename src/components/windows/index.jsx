@@ -51,7 +51,6 @@ const Card = styled(ContainerDefault)`
         font-size: 20px;
     }
 
-   
     p{
         color: ${Padrao.colors.grey};
         font-size: 10px;
@@ -89,7 +88,6 @@ function CloseBtn({ onClose }) {
     );
 }
 
-
 const Help = ({ onClose }) => {
     return (
         <Card>
@@ -111,15 +109,12 @@ const Help = ({ onClose }) => {
                 <p>Press B to dealt a 3x damage attack on the enemy.
                     <br />
                     <br />
-                    Consumes 20 mana each 
+                    Consumes 20 mana each Magic Attack
                 </p>
                 <div class="organizador">
                     <p>Enemies</p>
                 </div>
                 <p>Every 10th enemy is a Boss, defeat the Boss to discover new regions and enemies!
-                    <br />
-                    <br />
-                    Player earns XP every defeated enemy.
                 </p>
                 <div class="organizador">
                     <p>Items</p>

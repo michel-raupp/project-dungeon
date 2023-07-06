@@ -151,32 +151,26 @@ export const useItemHandling = () => {
     const { message, messageHistory, updateMessage, ulRef } = useMessage();
   
     const handleItem = (foundItem, player) => {
-      const updatedPlayer = { ...player }; // Create a copy of the player object
+      const updatedPlayer = { ...player }; 
   
       if (foundItem.type === "Consumable") {
-        // It's a consumable item (e.g., potion)
-        // Apply the attributes to the player's health or mana
         if (foundItem.attributes.healthRestore) {
           updatedPlayer.health += parseInt(foundItem.attributes.healthRestore);
-          // Ensure the player's health doesn't exceed the maximum health
           updatedPlayer.health = Math.min(updatedPlayer.health, updatedPlayer.maxHealth);
           const newMessage = `You used a ${foundItem.name} and restored ${foundItem.attributes.healthRestore} health.`;
           updateMessage(newMessage);
         }
         if (foundItem.attributes.manaRestore) {
           updatedPlayer.mana += parseInt(foundItem.attributes.manaRestore);
-          // Ensure the player's mana doesn't exceed the maximum mana
           updatedPlayer.mana = Math.min(updatedPlayer.mana, updatedPlayer.maxMana);
           const newMessage = `You used a ${foundItem.name} and restored ${foundItem.attributes.manaRestore} mana.`;
           updateMessage(newMessage);
         }
       } else if (foundItem.type === "sword") {
-        // It's a sword
-        // Check if the found sword is better than the current one
         if (foundItem.attributes.damageBonus > player.swordDamage) {
-          updatedPlayer.attack -= updatedPlayer.swordDamage; // Subtract the current sword damage
+          updatedPlayer.attack -= updatedPlayer.swordDamage; 
           updatedPlayer.swordDamage = foundItem.attributes.damageBonus;
-          updatedPlayer.attack += updatedPlayer.swordDamage; // Add the new sword damage
+          updatedPlayer.attack += updatedPlayer.swordDamage;
           const newMessage = `You equipped the (${foundItem.name}) (${foundItem.attributes.damageBonus} ATK)! Your attack has increased to ${updatedPlayer.attack}.`;
           updateMessage(newMessage);
         } else {
@@ -184,12 +178,11 @@ export const useItemHandling = () => {
           updateMessage(newMessage);
         }
       } else if (foundItem.type === "shield") {
-        // It's a shield
-        // Check if the found shield is better than the current one
+
         if (foundItem.attributes.healthBonus > player.shieldHealth) {
-          updatedPlayer.health -= updatedPlayer.shieldHealth; // Subtract the current shield health
+          updatedPlayer.health -= updatedPlayer.shieldHealth; 
           updatedPlayer.shieldHealth = foundItem.attributes.healthBonus;
-          updatedPlayer.maxHealth += updatedPlayer.shieldHealth; // Add the new shield health
+          updatedPlayer.maxHealth += updatedPlayer.shieldHealth; 
           const newMessage = `You equipped the (${foundItem.name}) (${foundItem.attributes.healthBonus} HP)! Your health has increased to ${updatedPlayer.maxHealth}.`;
           updateMessage(newMessage);
         } else {
@@ -197,8 +190,7 @@ export const useItemHandling = () => {
           updateMessage(newMessage);
         }
       }
-  
-      // Remove the found item from the list of items
+
       const updatedItems = items.filter((item) => item.id !== foundItem.id);
   
       return { updatedPlayer, updatedItems };

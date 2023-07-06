@@ -175,7 +175,10 @@ let defeatedEnemyCounter = 1;
 
 function handleEnemyDefeated() {
   defeatedEnemyCounter += 1;
-  // Additional logic related to enemy defeated
+}
+
+function resetEnemyDefeated() {
+  defeatedEnemyCounter = 1;
 }
 
 function setDefeatedEnemyCounter(value) {
@@ -191,7 +194,6 @@ function getDefeatedEnemyCounter() {
 }
 
 const getRandomEnemy = () => {
-  // Check if defeatedEnemyCounter is less than 10
   console.log("console: " + defeatedEnemyCounter);
   if (defeatedEnemyCounter < 10) {
     // Spawn region 1 enemies
@@ -205,7 +207,6 @@ const getRandomEnemy = () => {
     };
 
   } else if (defeatedEnemyCounter % 10 === 0) {
-    // Spawn the boss enemy for each 10th defeat
     const currentRegion = Math.floor(defeatedEnemyCounter / 10);
     const bossEnemies = enemyTypes.filter((enemy) => enemy.region === currentRegion + 0.5);
     const randomIndex = Math.floor(Math.random() * bossEnemies.length);
@@ -216,7 +217,6 @@ const getRandomEnemy = () => {
       health: randomEnemy.maxHealth,
     };
   } else {
-    // Spawn region enemies based on region number
     const currentRegion = Math.floor(defeatedEnemyCounter / 10) + 1;
     const regionEnemies = enemyTypes.filter((enemy) => enemy.region === currentRegion);
     const randomIndex = Math.floor(Math.random() * regionEnemies.length);
@@ -237,4 +237,4 @@ const getRandomEnemy = () => {
 };
 
 
-export { getRandomEnemy, handleEnemyDefeated, getDefeatedEnemyCounter, setDefeatedEnemyCounter };
+export { getRandomEnemy, handleEnemyDefeated, getDefeatedEnemyCounter, setDefeatedEnemyCounter, resetEnemyDefeated };

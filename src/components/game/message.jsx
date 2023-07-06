@@ -23,33 +23,41 @@ const useMessage = () => {
 
 const getMessageColor = (message) => {
     if (message.includes('Congratulations')) {
-      return 'lime'; // Set the color to green for specific message
+      return 'lime'; 
     }
     if (message.includes('You defeated')) {
-      return 'orangeRed'; // Set the color to red for specific message
+      return 'orangeRed'; 
     }
     if (message.includes('magic')) {
-      return 'cyan'; // Set the color to red for specific message
+      return 'cyan';
     }
     if (message.includes('found')) {
-      return 'gold'; // Set the color to red for specific message
+      return 'gold';
     }
     if (message.includes('You dodged')) {
-      return 'lightSkyBlue'; // Set the color to red for specific message
+      return 'lightSkyBlue';
     }
     if (message.includes('critical')) {
-      return 'Magenta'; // Set the color to red for specific message
+      return 'Magenta';
     }
     if (message.includes('the enemy dodged')) {
-      return 'indianRed'; // Set the color to red for specific message
+      return 'pink';
     }
     if (message.includes('equipped')) {
-      return 'lawnGreen'; // Set the color to red for specific message
+      return 'lawnGreen';
     }
     if (message.includes('restore')) {
-      return 'lawnGreen'; // Set the color to red for specific message
+      return 'lawnGreen';
     }
-    // Set default color for other messages
+    if (message.includes('You were defeated')) {
+      return '#ff8989';
+    }
+    if (message.includes('noble')) {
+      return '#ffa659';
+    }
+    if (message.includes('Project Dungeon')) {
+      return '#00ff60';
+    }
     return 'white';
   };
 
