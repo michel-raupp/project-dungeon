@@ -116,5 +116,9 @@ const GlobalStyle = createGlobalStyle`
     p{
         font-size: 8px;
     }
+
+    a{
+        cursor: pointer;
+    }
 `
 export default GlobalStyle;

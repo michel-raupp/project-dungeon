@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { ContainerDefault, Padrao } from '../../styles/styles'
 import sound from "../../assets/sound.svg";
 import help from "../../assets/help.svg";
-import about from "../../assets/configs.svg";
+import about from "../../assets/info.svg";
 import github from "../../assets/github.svg";
 import Music from "../../assets/sounds/music.mp3";
 import PlayerAttack from '../../assets/sounds/normal-attack2.mp3';
@@ -39,17 +39,20 @@ export const Botoes = styled(ContainerDefault)`
 `
 
 export const Botao = styled(ContainerDefault)`
+    cursor: pointer;
     flex-direction: column;
-    width: 120px;
-    height: 120px;
-    background: ${Padrao.colors.white};
+    width: ${props => props.isSocial ? '60px' : '120px'};
+    height: ${props => props.isSocial ? '60px' : '120px'};
+    background: ${props => props.isSocial ? `${Padrao.colors.red}` : `${Padrao.colors.white}`};
     border-radius: 16px;
     gap: 10px;
-    box-shadow: 8px 8px 0px 0px ${Padrao.colors.grey};
+    box-shadow: ${props => props.isSocial ? `4px 4px 0px 0px ${Padrao.colors.grey}` : `8px 8px 0px 0px ${Padrao.colors.grey}`};
 
     img{
-        height: 60px;
+        height: ${props => props.isSocial ? '30px' : '60px'};
+        filter: ${props => props.isSocial ? 'brightness(200)' : 'none'}
     }
+
     p{
         font-size: 14px;
         color: ${Padrao.colors.grey};
