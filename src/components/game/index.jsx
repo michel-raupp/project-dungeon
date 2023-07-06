@@ -1,17 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
-import {
-  Button,
-  Console,
-  ConsoleLog,
-  ContainerDefault,
-  EnemyImage,
-  PlayerImage,
-  Screen,
-  StartButton,
-  StyledHome,
-} from "../../styles/styles";
-import BotoesWrapper, { playDefeated, playMagicAttack, playMissed, playReward, playTookDamage } from "../buttons-and-sounds";
-import { playEnemyDamageSFX, playCriticalHit } from '../buttons-and-sounds/index';
+import { Button, Console, ConsoleLog, ContainerDefault, EnemyImage, PlayerImage, Screen, StartButton, StyledHome } from "../../styles/styles";
+import BotoesWrapper from "../buttons-and-sounds";
+import { playDefeated, playMagicAttack, playMissed, playReward, playTookDamage, playEnemyDamageSFX, playCriticalHit } from "../buttons-and-sounds/sounds"
 import { getDefeatedEnemyCounter, getRandomEnemy, handleEnemyDefeated, setDefeatedEnemyCounter } from "../data/enemies";
 import { useItemHandling, items } from "../data/items";
 import { useMessage, getMessageColor } from './message';
@@ -464,20 +454,20 @@ const Game = () => {
           function checkRandomEvent() {
             // Generate a random number between 0 and 1
             const randomNumber = Math.random();
-      
+
             // Calculate the chance of finding an item (e.g., 20%)
             const itemChance = .9;
-      
+
             // Check if the random number is less than the item chance
             if (randomNumber < itemChance) {
               // Random event occurred - player found an item
               // Choose a random item from the items array
               const foundItemIndex = Math.floor(Math.random() * items.length);
               const foundItem = items[foundItemIndex];
-      
+
               // Remove 1 from the quantity of the found item
               foundItem.quantity--;
-      
+
               // If the quantity of the found item is 0, remove it from the items array
               if (foundItem.quantity === 0) {
                 items.splice(foundItemIndex, 1);
@@ -485,7 +475,7 @@ const Game = () => {
               const newMessage = `You found a ${foundItem.name}!`;
               updateMessage(newMessage);
               // Apply the item's attributes to the player based on its type
-      
+
               if (foundItem) {
                 const { updatedPlayer } = handleItem(foundItem, player);
                 setPlayer(updatedPlayer); // Atualize o estado do jogador com o jogador atualizado
@@ -493,51 +483,51 @@ const Game = () => {
               // Return the found item
               return foundItem;
             }
-      
+
             // No random event occurred, return null to indicate no item was found
             return null;
           }
 
           // Generate a random event to check if an item is found
-        const foundItem = checkRandomEvent();
+          const foundItem = checkRandomEvent();
 
-        if (foundItem) {
-          playReward();
-          // Apply the item's attributes to the player based on its type
-          if (foundItem.type === "Consumable") {
-            // It's a consumable item (e.g., potion)
-            // Apply the attributes to the player's health or mana
-            if (foundItem.attributes.healthRestore) {
-              updatedPlayer.health += foundItem.attributes.healthRestore;
-              // Ensure the health doesn't exceed the maxHealth
-              updatedPlayer.health = Math.min(updatedPlayer.health, updatedPlayer.maxHealth);
-            }
-            if (foundItem.attributes.manaRestore) {
-              updatedPlayer.mana += foundItem.attributes.manaRestore;
-              // Ensure the mana doesn't exceed the maxMana
-              updatedPlayer.mana = Math.min(updatedPlayer.mana, updatedPlayer.maxMana);
-            }
-          } else if (foundItem.type === "sword") {
-            // It's a sword
-            // Check if the found sword is better than the current one
-            if (foundItem.attributes.damageBonus > updatedPlayer.swordDamage) {
-              updatedPlayer.swordDamage = foundItem.attributes.damageBonus;
-              updatedPlayer.attack = updatedPlayer.attack - player.swordDamage + updatedPlayer.swordDamage;
-            }
-          } else if (foundItem.type === "shield") {
-            // It's a shield
-            // Check if the found shield is better than the current one
-            if (
-              foundItem.attributes.healthBonus &&
-              !isNaN(foundItem.attributes.healthBonus) &&
-              foundItem.attributes.healthBonus > updatedPlayer.shieldHealth
-            ) {
-              updatedPlayer.shieldHealth = foundItem.attributes.healthBonus;
-              // Update the player's health with the new shield health
-              updatedPlayer.maxHealth += foundItem.attributes.healthBonus;
+          if (foundItem) {
+            playReward();
+            // Apply the item's attributes to the player based on its type
+            if (foundItem.type === "Consumable") {
+              // It's a consumable item (e.g., potion)
+              // Apply the attributes to the player's health or mana
+              if (foundItem.attributes.healthRestore) {
+                updatedPlayer.health += foundItem.attributes.healthRestore;
+                // Ensure the health doesn't exceed the maxHealth
+                updatedPlayer.health = Math.min(updatedPlayer.health, updatedPlayer.maxHealth);
+              }
+              if (foundItem.attributes.manaRestore) {
+                updatedPlayer.mana += foundItem.attributes.manaRestore;
+                // Ensure the mana doesn't exceed the maxMana
+                updatedPlayer.mana = Math.min(updatedPlayer.mana, updatedPlayer.maxMana);
+              }
+            } else if (foundItem.type === "sword") {
+              // It's a sword
+              // Check if the found sword is better than the current one
+              if (foundItem.attributes.damageBonus > updatedPlayer.swordDamage) {
+                updatedPlayer.swordDamage = foundItem.attributes.damageBonus;
+                updatedPlayer.attack = updatedPlayer.attack - player.swordDamage + updatedPlayer.swordDamage;
+              }
+            } else if (foundItem.type === "shield") {
+              // It's a shield
+              // Check if the found shield is better than the current one
+              if (
+                foundItem.attributes.healthBonus &&
+                !isNaN(foundItem.attributes.healthBonus) &&
+                foundItem.attributes.healthBonus > updatedPlayer.shieldHealth
+              ) {
+                updatedPlayer.shieldHealth = foundItem.attributes.healthBonus;
+                // Update the player's health with the new shield health
+                updatedPlayer.maxHealth += foundItem.attributes.healthBonus;
+              }
             }
           }
-        }
           setTimeout(() => {
             enemyImageElement.classList.add("enemy-defeated-animation");
           }, 100);

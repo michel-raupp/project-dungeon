@@ -16,6 +16,8 @@ import Defeated from '../../assets/sounds/enemy-defeated.mp3'
 import MagicAttack from '../../assets/sounds/magic-attack.mp3'
 import MagicCharge from '../../assets/sounds/magic-charge2.mp3'
 import { About, Help } from "../windows/index"
+import { playEnemyDamageSFX, playCriticalHit, playTookDamage, playReward, playMissed, playDefeated, playMagicAttack, BackgroundMusic, toggleVolume, stopBackgroundMusic } from './sounds';
+import Cookies from 'js-cookie';
 
 // background sound
 // https://www.youtube.com/watch?v=uIfD2BKaD2k
@@ -73,135 +75,72 @@ export const Botao = styled(ContainerDefault)`
         }
     }
     @media(max-width: 640px){
-        transform: rotate(90deg)
+        transform: ${props => props.isSocial ? 'rotate(0)' : 'rotate(90deg)'} 
     }
     
 `
 
-const playEnemyDamageSFX = () => {
-    const sfx = new Audio(PlayerAttack);
-    sfx.currentTime = 0.2;
-    sfx.volume = .5;
-    sfx.play();
-};
-
-const playCriticalHit = () => {
-    const sfx = new Audio(CriticalHit);
-    sfx.volume = .5;
-    sfx.play();
-};
-
-const playTookDamage = () => {
-    const sfx = new Audio(TookDamage);
-    sfx.volume = .5;
-    sfx.play();
-};
-
-const playReward = () => {
-    const sfx = new Audio(Reward);
-    sfx.currentTime = 0.4;
-    sfx.volume = .5;
-    setTimeout(() => {
-        sfx.play();
-    }, 500);
-};
-
-const playMissed = () => {
-    const sfx = new Audio(Missed);
-    sfx.currentTime = 0.4;
-    sfx.volume = .5;
-    sfx.play();
-};
-
-const playDefeated = () => {
-    const sfx = new Audio(Defeated);
-    sfx.currentTime = 0.4;
-    sfx.volume = .5;
-    setTimeout(() => {
-        sfx.play();
-    }, 100);
-
-};
-
-const playMagicAttack = () => {
-    const charge = new Audio(MagicCharge);
-    charge.volume = .5;
-    setTimeout(() => {
-        charge.play();
-    }, 200);
-};
-
-const BackgroundMusic = ({ isMuted }) => {
-    useEffect(() => {
-        const audio = new Audio(Music);
-        audio.loop = true;
-        audio.volume = isMuted ? 0 : 0;
-
-        const playMusic = () => {
-            if (isMuted) {
-                audio.volume = .1;
-            }
-            audio.play()
-                .catch(error => {
-                    console.log('Failed to play audio:', error);
-                });
-        };
-
-        document.addEventListener('click', playMusic);
-        return () => {
-            document.removeEventListener('click', playMusic);
-            audio.volume = 0;
-        };
-    }, [isMuted]);
-
-    return null;
-};
-
 export default function BotoesWrapper() {
-    const [isMuted, setIsMuted] = useState(true);
-    const [isOpen, setIsOpen] = useState(0);
-  
-    const toggleHelp = () => {
-      setIsOpen(isOpen === 1 ? 0 : 1);
-    };
-  
-    const toggleAbout = () => {
-      setIsOpen(isOpen === 2 ? 0 : 2);
-    };
-  
-    const toggleMusic = () => {
-      setIsMuted(!isMuted);
-    };
-  
-    return (
-      <Botoes>
-        {isMuted && <BackgroundMusic isMuted={isMuted} />}
-        <Botao onClick={toggleMusic}>
-          <img src={sound} alt='sound' />
-          <p>{isMuted ? 'Mute' : 'Unmute'}</p>
-        </Botao>
-  
-        <Botao onClick={toggleHelp}>
-          <img src={help} alt='help' />
-          <p>Help</p>
-        </Botao>
-        <Botao onClick={toggleAbout}>
-          <img src={about} alt='about me' />
-          <p>About</p>
-        </Botao>
-        <a href="https://github.com/michel-raupp" target='_blank' rel='noopener noreferrer'>
-          <Botao>
-            <img src={github} alt='Github' />
-            <p>Github</p>
-          </Botao>
-        </a>
-        {isOpen === 1 && <Help onClose={toggleHelp} />}
-        {isOpen === 2 && <About onClose={toggleAbout} />}
-      </Botoes>
-    );
-  }
-  
+  const [isMuted, setIsMuted] = useState(true);
+  const [isOpen, setIsOpen] = useState(0);
 
+  useEffect(() => {
+    const savedIsMuted = Cookies.get('isMuted');
+    if (savedIsMuted === 'false') {
+      setIsMuted(false);
+      toggleVolume(true);
+    }
+  }, []);
 
+  useEffect(() => {
+    Cookies.set('isMuted', isMuted);
+  }, [isMuted]);
 
-export { BackgroundMusic, playEnemyDamageSFX, playCriticalHit, playTookDamage, playReward, playMissed, playDefeated, playMagicAttack };
+  const toggleHelp = () => {
+    setIsOpen(isOpen === 1 ? 0 : 1);
+  };
+
+  const toggleAbout = () => {
+    setIsOpen(isOpen === 2 ? 0 : 2);
+  };
+
+  const toggleSound = () => {
+    toggleVolume();
+
+    if (isMuted) {
+      setIsMuted(false);
+      BackgroundMusic();
+    } else {
+      setIsMuted(true);
+      stopBackgroundMusic();
+    }
+  };
+
+  return (
+    <Botoes>
+
+      <Botao onClick={toggleSound}>
+        <img src={sound} alt='sound' />
+        <p>{isMuted ? 'Mute' : 'Unmute'}</p>
+      </Botao>
+
+      <Botao onClick={toggleHelp}>
+        <img src={help} alt='help' />
+        <p>Help</p>
+      </Botao>
+      <Botao onClick={toggleAbout}>
+        <img src={about} alt='about me' />
+        <p>About</p>
+      </Botao>
+      <a href="https://github.com/michel-raupp" target='_blank' rel='noopener noreferrer'>
+        <Botao>
+          <img src={github} alt='Github' />
+          <p>Github</p>
+        </Botao>
+      </a>
+      {isOpen === 1 && <Help onClose={toggleHelp} />}
+      {isOpen === 2 && <About onClose={toggleAbout} />}
+      <BackgroundMusic isMuted={isMuted} />
+    </Botoes>
+  );
+}
