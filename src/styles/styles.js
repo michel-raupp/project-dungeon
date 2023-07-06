@@ -521,9 +521,9 @@ export const StartButton = styled(Button)`
 
 export const Screen = styled(ContainerDefault)`
   background: ${Padrao.colors.primary};
-  width: 160px;
+  width: 170px;
   height: 140px;
-  padding: 10px;
+  padding: 10px 5px;
   border: 5px solid ${Padrao.colors.black};
   flex-direction: column;
 `;
