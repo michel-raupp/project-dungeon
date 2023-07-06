@@ -13,7 +13,7 @@ const Game = () => {
     () => ({
       name: "Player",
       maxHealth: 50,
-      health: 2,
+      health: 50,
       maxMana: 20,
       mana: 20,
       attack: 5,

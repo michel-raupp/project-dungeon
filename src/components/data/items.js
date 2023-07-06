@@ -24,7 +24,7 @@ export const items = [
         name: "Health Potion",
         type: "Consumable",
         attributes: {
-            healthRestore: 15
+            healthRestore: 20
         },
         quantity: 5
     },
@@ -33,31 +33,31 @@ export const items = [
         name: "Mana Potion",
         type: "Consumable",
         attributes: {
-            manaRestore: 15
+            manaRestore: 20
         },
         quantity: 5
     },
     {
         id: 5,
-        name: "Royal Sword",
-        type: "sword",
+        name: "Great Health Potion",
+        type: "Consumable",
         attributes: {
-            damageBonus: 1,
+            healthRestore: 40
         },
-        quantity: 1
+        quantity: 5
     },
     {
         id: 6,
-        name: "Royal Shield",
-        type: "shield",
+        name: "Great Mana Potion",
+        type: "Consumable",
         attributes: {
-            healthBonus: 4,
+            manaRestore: 40
         },
-        quantity: 1
+        quantity: 5
     },
     {
         id: 7,
-        name: "Guardian Blade",
+        name: "Royal Sword",
         type: "sword",
         attributes: {
             damageBonus: 2,
@@ -66,34 +66,16 @@ export const items = [
     },
     {
         id: 8,
-        name: "Guardian Shield",
+        name: "Royal Shield",
         type: "shield",
         attributes: {
-            healthBonus: 3,
+            healthBonus: 4,
         },
         quantity: 1
     },
     {
         id: 9,
-        name: "Blade of Justice",
-        type: "sword",
-        attributes: {
-            damageBonus: 4,
-        },
-        quantity: 1
-    },
-    {
-        id: 10,
-        name: "Divine Protector",
-        type: "shield",
-        attributes: {
-            healthBonus: 3,
-        },
-        quantity: 1
-    },
-    {
-        id: 11,
-        name: "Mithril Sword",
+        name: "Guardian Blade",
         type: "sword",
         attributes: {
             damageBonus: 3,
@@ -101,16 +83,52 @@ export const items = [
         quantity: 1
     },
     {
-        id: 12,
-        name: "Mithril Shield",
+        id: 10,
+        name: "Guardian Shield",
         type: "shield",
         attributes: {
-            healthBonus: 5,
+            healthBonus: 6,
+        },
+        quantity: 1
+    },
+    {
+        id: 11,
+        name: "Blade of Justice",
+        type: "sword",
+        attributes: {
+            damageBonus: 6,
+        },
+        quantity: 1
+    },
+    {
+        id: 12,
+        name: "Divine Protector",
+        type: "shield",
+        attributes: {
+            healthBonus: 8,
         },
         quantity: 1
     },
     {
         id: 13,
+        name: "Mithril Sword",
+        type: "sword",
+        attributes: {
+            damageBonus: 10,
+        },
+        quantity: 1
+    },
+    {
+        id: 14,
+        name: "Mithril Shield",
+        type: "shield",
+        attributes: {
+            healthBonus: 15,
+        },
+        quantity: 1
+    },
+    {
+        id: 15,
         name: "Dragon Sword",
         type: "sword",
         attributes: {
@@ -119,7 +137,7 @@ export const items = [
         quantity: 1
     },
     {
-        id: 14,
+        id: 16,
         name: "Dragon Shield",
         type: "shield",
         attributes: {
@@ -128,7 +146,7 @@ export const items = [
         quantity: 1
     },
     {
-        id: 15,
+        id: 17,
         name: "Frostbite Sword",
         type: "sword",
         attributes: {
@@ -137,7 +155,7 @@ export const items = [
         quantity: 1
     },
     {
-        id: 16,
+        id: 18,
         name: "Stormshield",
         type: "shield",
         attributes: {
