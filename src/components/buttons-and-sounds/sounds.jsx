@@ -10,7 +10,7 @@ import MagicAttack from '../../assets/sounds/magic-attack.mp3';
 import MagicCharge from '../../assets/sounds/magic-charge2.mp3';
 import Music from "../../assets/sounds/music.mp3";
 
-let soundVolume = 0.5;
+let soundVolume = 0.07;
 
 export const playEnemyDamageSFX = () => {
   const sfx = new Audio(PlayerAttack);
@@ -78,5 +78,5 @@ export const stopBackgroundMusic = () => {
 };
 
 export const toggleVolume = () => {
-  soundVolume = soundVolume === 0 ? 0.5 : 0;
+  soundVolume = soundVolume === 0 ? 0.07 : 0;
 };
